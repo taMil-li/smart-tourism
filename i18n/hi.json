@@ -1,0 +1,61 @@
+{
+  "app": {
+    "title": "SMART TOURISM",
+    "actions": {
+      "refresh": "रिफ्रेश",
+      "sos": "SOS",
+      "tourDetails": "मेरे विवरण",
+      "logout": "लॉग आउट",
+      "signout": "साइन आउट"
+    }
+  },
+  "login": {
+    "title": "अपने खाते में लॉगिन करें",
+    "fields": {
+      "name": "पूर्ण नाम",
+      "dob": "जन्म तिथि",
+      "passport": "पासपोर्ट नंबर",
+      "issueDate": "पासपोर्ट जारी करने की तिथि",
+      "destination": "गंतव्य स्थान",
+      "privateKey": "अपनी निजी कुंजी दर्ज करें"
+    },
+    "cta": "लॉगिन",
+    "noAccount": "खाता नहीं है?",
+    "signupLink": "साइन अप"
+  },
+  "signup": {
+    "title": "अपना टूरिस्ट आईडी बनाएं",
+    "fields": {
+      "name": "पूर्ण नाम",
+      "dob": "जन्म तिथि",
+      "passport": "पासपोर्ट नंबर",
+      "issueDate": "जारी करने की तिथि",
+      "privateKey": "उपयोगकर्ता निजी कुंजी",
+      "govtSignature": "सरकारी हस्ताक्षर",
+      "destination": "गंतव्य स्थान"
+    },
+    "cta": "साइन अप",
+    "haveAccount": "पहले से एक खाता है?",
+    "loginLink": "लॉगिन"
+  },
+  "dashboard": {
+    "address": "पता",
+    "recentCrimes": "हाल के आसपास के अपराध (10 किमी)",
+    "weather": "मौसम",
+    "nearbyTourist": "नज़दीकी पर्यटन स्थल",
+    "nearbyPolice": "नज़दीकी पुलिस",
+    "hospitals": "अस्पताल",
+    "fireStations": "अग्निशमन स्टेशन",
+    "restricted": "सीमित / सैन्य",
+    "gdacs": "प्रकोप चेतावनी (GDACS)",
+    "relief": "सुरक्षा / आतंकवाद रिपोर्ट (ReliefWeb)",
+    "notes": "नोट्स और डेटा स्रोत",
+    "modal": {
+      "signoutTitle": "साइन आउट (खाता अक्षम करें)",
+      "userHash": "उपयोगकर्ता डेटा हैश",
+      "govSig": "सरकारी साइन आउट हस्ताक्षर",
+      "cancel": "रद्द करें",
+      "submit": "साइन आउट"
+    }
+  }
+}

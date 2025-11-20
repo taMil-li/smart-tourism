@@ -1,0 +1,62 @@
+{
+  "app": {
+    "title": "SMART TOURISM",
+    "actions": {
+      "refresh": "Refresh",
+      "sos": "SOS",
+      "logout": "Logout",
+      "signout": "Sign Out"
+    }
+  },
+  "login": {
+    "title": "Login to Your Account",
+    "fields": {
+      "name": "Full Name",
+      "dob": "Date of Birth",
+      "passport": "Passport Number",
+      "issueDate": "Passport Issue Date",
+      "destination": "Destination Place",
+      "privateKey": "Enter Your Private Key"
+    },
+    "cta": "Login",
+    "noAccount": "Don’t have an account?",
+    "signupLink": "Sign Up"
+  },
+  "signup": {
+    "title": "Create Your Tourist ID",
+    "fields": {
+      "name": "Full Name",
+      "dob": "Date of Birth",
+      "passport": "Passport Number",
+      "issueDate": "Passport Issue Date",
+      "privateKey": "User Private Key",
+      "govtSignature": "Govt Signature",
+      "destination": "Destination Place"
+    },
+    "cta": "Sign Up",
+    "haveAccount": "Already have an account?",
+    "loginLink": "Login"
+  },
+  "dashboard": {
+    "address": "Address",
+    "recentCrimes": "Recent nearby crimes (10 km)",
+    "weather": "Weather",
+    "nearbyTourist": "Nearby Tourist Places",
+    "nearbyPolice": "Nearby Police",
+    "hospitals": "Hospitals",
+    "fireStations": "Fire Stations",
+    "restricted": "Restricted / Military",
+    "gdacs": "Disaster Alerts (GDACS)",
+    "relief": "Security / Terrorism Reports (ReliefWeb)",
+    "notes": "Notes & data sources",
+    "modal": {
+      "signoutTitle": "Sign Out (Deactivate Account)",
+      "userHash": "User Data Hash",
+      "govSig": "Govt Signout Signature",
+      "cancel": "Cancel",
+      "submit": "Sign Out"
+    }
+  }
+}
+
+

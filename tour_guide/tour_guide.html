@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMART TOURISM</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1a1d29 0%, #2d3748 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header section */
+        .header {
+            background: rgba(26, 29, 41, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4fd1c7;
+        }
+
+        .logo::before {
+            content: "🗺️";
+            font-size: 1.8rem;
+        }
+
+        .status-badge {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        /* Main content */
+        .main {
+            padding: 2rem 0;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #4fd1c7, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: #94a3b8;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Search section */
+        .search-section {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .search-form {
+            display: flex;
+            gap: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 250px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            color: #e2e8f0;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #4fd1c7;
+            box-shadow: 0 0 0 3px rgba(79, 209, 199, 0.1);
+        }
+
+        .search-input::placeholder {
+            color: #64748b;
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, #4fd1c7, #06b6d4);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .search-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(79, 209, 199, 0.3);
+        }
+
+        .search-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Results section */
+        .results-section {
+            display: none;
+        }
+
+        .results-section.show {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .result-card {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 35px -5px rgba(0, 0, 0, 0.2), 0 15px 15px -5px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-icon {
+            font-size: 2rem;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #4fd1c7;
+        }
+
+        .card-subtitle {
+            font-size: 1.1rem;
+            color: #94a3b8;
+            margin-top: 0.25rem;
+        }
+
+        .description-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .description-text {
+            color: #cbd5e1;
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        .concerns-section {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .concerns-list {
+            list-style: none;
+            margin-top: 0.75rem;
+        }
+
+        .concerns-list li {
+            color: #cbd5e1;
+            margin-bottom: 0.75rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .concerns-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: #f59e0b;
+            font-weight: bold;
+        }
+
+        .culture-card {
+            border-left: 4px solid #8b5cf6;
+        }
+
+        .culture-card .concerns-section {
+            border-left: 4px solid #8b5cf6;
+        }
+
+        .heritage-card {
+            border-left: 4px solid #f97316;
+        }
+
+        .heritage-card .concerns-section {
+            border-left: 4px solid #f97316;
+        }
+
+        .destination-card {
+            border-left: 4px solid #06b6d4;
+        }
+
+        .destination-card .concerns-section {
+            border-left: 4px solid #06b6d4;
+        }
+
+        /* Error section */
+        .error-section {
+            display: none;
+            background: rgba(220, 38, 38, 0.1);
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .error-section.show {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .error-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .error-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #f87171;
+            margin-bottom: 0.5rem;
+        }
+
+        .error-message {
+            color: #fca5a5;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 0.75rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .search-section {
+                padding: 1.5rem;
+            }
+
+            .search-form {
+                flex-direction: column;
+            }
+
+            .search-input {
+                min-width: 100%;
+            }
+
+            .cards-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .result-card {
+                padding: 1.5rem;
+            }
+
+            .card-title {
+                font-size: 1.2rem;
+            }
+
+            .header-content {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.75rem;
+            }
+
+            .search-section {
+                padding: 1rem;
+            }
+
+            .result-card {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">TourGuide AI</div>
+                <div class="status-badge">Powered by AI</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Hero Section -->
+            <section class="hero">
+                <h1>Discover Your Next Adventure</h1>
+                <p>Get comprehensive destination guides with tourism insights, cultural heritage, and historical significance for any place worldwide, powered by advanced AI.</p>
+            </section>
+
+            <!-- Search Section -->
+            <section class="search-section">
+                <form class="search-form" id="searchForm">
+                    <input 
+                        type="text" 
+                        class="search-input" 
+                        id="destinationInput"
+                        placeholder="Enter destination (e.g., Taj Mahal, Kerala, Delhi)"
+                        required
+                        autocomplete="off"
+                    >
+                    <button type="submit" class="search-btn" id="searchBtn">
+                        <span class="btn-text">Explore</span>
+                        <span class="spinner" id="loadingSpinner" style="display: none;"></span>
+                    </button>
+                </form>
+            </section>
+
+            <!-- Results Section -->
+            <section class="results-section" id="resultsSection">
+                <div class="cards-container" id="cardsContainer">
+                    <!-- Dynamic content will be inserted here -->
+                </div>
+            </section>
+
+            <!-- Error Section -->
+            <section class="error-section" id="errorSection">
+                <div class="error-icon">❌</div>
+                <div class="error-title">Oops! Something went wrong</div>
+                <div class="error-message" id="errorMessage">
+                    Unable to fetch destination information. Please try again or check your destination name.
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        // DOM Elements
+        const searchForm = document.getElementById('searchForm');
+        const destinationInput = document.getElementById('destinationInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const btnText = searchBtn.querySelector('.btn-text');
+        const resultsSection = document.getElementById('resultsSection');
+        const cardsContainer = document.getElementById('cardsContainer');
+        const errorSection = document.getElementById('errorSection');
+        const errorMessage = document.getElementById('errorMessage');
+
+        // State management
+        let isLoading = false;
+
+        // Event Listeners
+        searchForm.addEventListener('submit', handleSearch);
+
+        // Input validation and UX improvements
+        destinationInput.addEventListener('input', function() {
+            if (this.value.trim().length > 0) {
+                searchBtn.disabled = false;
+            } else {
+                searchBtn.disabled = true;
+            }
+        });
+
+        // Main search function
+        async function handleSearch(event) {
+            event.preventDefault();
+            
+            const destination = destinationInput.value.trim();
+            if (!destination) return;
+
+            // Reset previous results
+            hideAllSections();
+            setLoadingState(true);
+
+            try {
+                // Generate all three types of content
+                const responses = await Promise.all([
+                    generateDestinationGuide(destination),
+                    generateCultureGuide(destination),
+                    generateHeritageGuide(destination)
+                ]);
+                
+                displayResults(responses, destination);
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Network error. Please check your connection and try again.');
+            } finally {
+                setLoadingState(false);
+            }
+        }
+
+        // Generate destination-specific guide
+        async function generateDestinationGuide(destination) {
+            // Simulate API delay
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            const guides = {
+                'taj mahal': {
+                    name: 'Taj Mahal, Agra',
+                    description: 'One of the Seven Wonders of the World, the Taj Mahal is a magnificent white marble mausoleum built by Emperor Shah Jahan in memory of his wife Mumtaz Mahal. This UNESCO World Heritage Site showcases the pinnacle of Mughal architecture and attracts millions of visitors yearly with its stunning beauty and romantic history.',
+                    concerns: [
+                        'Heavy crowds, especially during peak tourist seasons (October-March)',
+                        'Air pollution affecting the marble structure - visiting early morning recommended',
+                        'Photography restrictions inside the main mausoleum',
+                        'Security checks can be time-consuming - arrive early'
+                    ]
+                },
+                'kerala': {
+                    name: 'Kerala - God\'s Own Country',
+                    description: 'Known as "God\'s Own Country," Kerala offers serene backwaters, lush hill stations, pristine beaches, and rich cultural heritage. From houseboat cruises in Alleppey to spice plantations in Munnar and Kathakali performances, Kerala provides a perfect blend of natural beauty and traditional arts.',
+                    concerns: [
+                        'Monsoon season (June-September) can disrupt travel plans',
+                        'High humidity levels throughout the year',
+                        'Book houseboats and hill station accommodations well in advance',
+                        'Be cautious of overpriced tourist packages - research thoroughly'
+                    ]
+                },
+                'delhi': {
+                    name: 'Delhi - The Capital City',
+                    description: 'India\'s vibrant capital seamlessly blends ancient history with modern development. From the majestic Red Fort and India Gate to bustling markets of Chandni Chowk and modern malls, Delhi offers diverse experiences including world-class museums, delicious street food, and architectural marvels.',
+                    concerns: [
+                        'Air pollution levels can be very high, especially in winter months',
+                        'Extreme weather - very hot summers and cold winters',
+                        'Heavy traffic congestion - plan extra time for transportation',
+                        'Be cautious with street food if you have a sensitive stomach'
+                    ]
+                }
+            };
+
+            const key = destination.toLowerCase();
+            return guides[key] || generateDefaultDestinationGuide(destination);
+        }
+
+        // Generate culture and traditions guide
+        async function generateCultureGuide(destination) {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            const cultureData = {
+                name: 'Culture and Traditions',
+                description: 'India\'s cultural diversity is unparalleled, with over 22 official languages, countless festivals, and varied traditions across states. From classical dance forms like Bharatanatyam and Kathak to colorful festivals like Diwali, Holi, and regional celebrations, Indian culture represents unity in diversity through its rich tapestry of customs, handicrafts, and artistic expressions.',
+                concerns: [
+                    'Respect local customs - dress modestly when visiting religious sites',
+                    'Learn basic greetings in the local language for better interaction',
+                    'Participate respectfully in cultural events and festivals',
+                    'Be aware of regional dietary restrictions and preferences'
+                ]
+            };
+
+            return cultureData;
+        }
+
+        // Generate heritage and history guide
+        async function generateHeritageGuide(destination) {
+            await new Promise(resolve => setTimeout(resolve, 800));
+            
+            const heritageData = {
+                name: 'Heritage and History',
+                description: 'India\'s historical heritage spans over 5000 years, from the ancient Indus Valley Civilization to the Mughal Empire and British colonial period. With 40 UNESCO World Heritage Sites, including architectural marvels like Taj Mahal, Ajanta & Ellora Caves, and Red Fort, India preserves invaluable cultural legacies through magnificent temples, forts, palaces, and monuments.',
+                concerns: [
+                    'Many heritage sites have entry fees and photography charges',
+                    'Guided tours can enhance understanding of historical significance',
+                    'Some sites have restricted visiting hours and days',
+                    'Preserve historical sites - avoid touching artifacts and walls'
+                ]
+            };
+
+            return heritageData;
+        }
+
+        // Generate default guide for unknown destinations
+        function generateDefaultDestinationGuide(destination) {
+            return {
+                name: destination,
+                description: `${destination} offers unique experiences with its distinctive local culture, attractions, and natural beauty. This destination provides opportunities to explore regional traditions, sample authentic cuisine, and discover hidden gems that showcase the diverse character of this remarkable place.`,
+                concerns: [
+                    'Research local customs and etiquette before visiting',
+                    'Check visa requirements and travel advisories if international',
+                    'Ensure travel insurance covers your planned activities',
+                    'Keep emergency contacts and important documents handy'
+                ]
+            };
+        }
+
+        // UI State Management Functions
+        function setLoadingState(loading) {
+            isLoading = loading;
+            searchBtn.disabled = loading;
+            
+            if (loading) {
+                loadingSpinner.style.display = 'block';
+                btnText.textContent = 'Searching...';
+            } else {
+                loadingSpinner.style.display = 'none';
+                btnText.textContent = 'Explore';
+            }
+        }
+
+        function hideAllSections() {
+            resultsSection.classList.remove('show');
+            errorSection.classList.remove('show');
+        }
+
+        function displayResults(responses, destination) {
+            const [destinationData, cultureData, heritageData] = responses;
+            
+            const cardsHTML = `
+                <!-- Destination Card -->
+                <div class="result-card destination-card">
+                    <div class="card-header">
+                        <div class="card-icon">🏛️</div>
+                        <div>
+                            <div class="card-title">${escapeHtml(destinationData.name)}</div>
+                            <div class="card-subtitle">Destination Guide</div>
+                        </div>
+                    </div>
+                    
+                    <div class="description-section">
+                        <h3 class="section-title">
+                            <span>ℹ️</span>
+                            About This Destination
+                        </h3>
+                        <p class="description-text">${escapeHtml(destinationData.description)}</p>
+                    </div>
+                    
+                    <div class="concerns-section">
+                        <h3 class="section-title">
+                            <span>💡</span>
+                            Travel Tips & Considerations
+                        </h3>
+                        <ul class="concerns-list">
+                            ${destinationData.concerns.map(concern => 
+                                `<li>${escapeHtml(concern)}</li>`
+                            ).join('')}
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Culture Card -->
+                <div class="result-card culture-card">
+                    <div class="card-header">
+                        <div class="card-icon">🎭</div>
+                        <div>
+                            <div class="card-title">${escapeHtml(cultureData.name)}</div>
+                            <div class="card-subtitle">Cultural Insights</div>
+                        </div>
+                    </div>
+                    
+                    <div class="description-section">
+                        <h3 class="section-title">
+                            <span>🎨</span>
+                            Cultural Heritage
+                        </h3>
+                        <p class="description-text">${escapeHtml(cultureData.description)}</p>
+                    </div>
+                    
+                    <div class="concerns-section">
+                        <h3 class="section-title">
+                            <span>🤝</span>
+                            Cultural Etiquette
+                        </h3>
+                        <ul class="concerns-list">
+                            ${cultureData.concerns.map(concern => 
+                                `<li>${escapeHtml(concern)}</li>`
+                            ).join('')}
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Heritage Card -->
+                <div class="result-card heritage-card">
+                    <div class="card-header">
+                        <div class="card-icon">🏰</div>
+                        <div>
+                            <div class="card-title">${escapeHtml(heritageData.name)}</div>
+                            <div class="card-subtitle">Historical Background</div>
+                        </div>
+                    </div>
+                    
+                    <div class="description-section">
+                        <h3 class="section-title">
+                            <span>📚</span>
+                            Historical Significance
+                        </h3>
+                        <p class="description-text">${escapeHtml(heritageData.description)}</p>
+                    </div>
+                    
+                    <div class="concerns-section">
+                        <h3 class="section-title">
+                            <span>🏛️</span>
+                            Heritage Guidelines
+                        </h3>
+                        <ul class="concerns-list">
+                            ${heritageData.concerns.map(concern => 
+                                `<li>${escapeHtml(concern)}</li>`
+                            ).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+
+            cardsContainer.innerHTML = cardsHTML;
+            resultsSection.classList.add('show');
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorSection.classList.add('show');
+        }
+
+        // Utility function to escape HTML and prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Initialize the application
+        function init() {
+            // Set initial state
+            searchBtn.disabled = true;
+            
+            // Focus on input for better UX
+            destinationInput.focus();
+            
+            // Add some example destinations
+            const examples = ['Taj Mahal', 'Kerala', 'Delhi', 'Goa', 'Rajasthan'];
+            destinationInput.setAttribute('placeholder', 
+                `Try: ${examples[Math.floor(Math.random() * examples.length)]}`
+            );
+        }
+
+        // Start the application
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

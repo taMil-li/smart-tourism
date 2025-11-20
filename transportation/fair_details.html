@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMART TOURISM</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 25px 0;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+        
+        .app-container {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+        }
+        
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .tab {
+            padding: 18px 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .tab:hover {
+            background: #e9ecef;
+        }
+        
+        .tab.active {
+            background: white;
+            border-bottom: 3px solid #667eea;
+            color: #667eea;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 25px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .search-section {
+            margin-bottom: 25px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+        
+        label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #444;
+        }
+        
+        input, select {
+            padding: 14px 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+        
+        button {
+            padding: 16px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        button:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .results-section {
+            margin-top: 30px;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #444;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .price-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+            border: 1px solid #e9ecef;
+        }
+        
+        .price-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        .card-header {
+            padding: 18px 20px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .product-header {
+            background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
+        }
+        
+        .transport-header {
+            background: linear-gradient(135deg, #5f7aff 0%, #6e8efb 100%);
+        }
+        
+        .accommodation-header {
+            background: linear-gradient(135deg, #2ecc71 0%, #4cd964 100%);
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        .price-range {
+            font-size: 1.6rem;
+            font-weight: 700;
+            text-align: center;
+            margin: 15px 0;
+            color: #2c3e50;
+        }
+        
+        .price-details {
+            margin-bottom: 15px;
+        }
+        
+        .price-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            color: #666;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f3f5;
+        }
+        
+        .tips {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .tips h4 {
+            margin-bottom: 10px;
+            color: #444;
+        }
+        
+        .tips ul {
+            padding-left: 20px;
+        }
+        
+        .tips li {
+            margin-bottom: 5px;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 50px 40px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            grid-column: 1 / -1;
+        }
+        
+        .no-results i {
+            font-size: 3rem;
+            color: #adb5bd;
+            margin-bottom: 20px;
+        }
+        
+        .loader {
+            text-align: center;
+            padding: 50px 40px;
+            grid-column: 1 / -1;
+            display: none;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .indian-cities {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .indian-cities {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+        }
+        
+        .city-btn {
+            padding: 10px 5px;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        
+        .city-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #5a67d8;
+        }
+        
+        .info-text {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        
+        .price-comparison {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .price-bubble {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .price-bubble.fair {
+            border: 2px solid #2ecc71;
+        }
+        
+        .price-bubble.high {
+            border: 2px solid #ff7e5f;
+        }
+        
+        .bubble-label {
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+        }
+        
+        .bubble-value {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .disclaimer {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        footer {
+            text-align: center;
+            color: white;
+            padding: 20px 0;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>India Fair Price Guide</h1>
+            <p class="tagline">Avoid getting scammed - know the fair prices for products and services across India</p>
+        </header>
+        
+        <div class="app-container">
+            <div class="tabs">
+                <div class="tab active" data-tab="products">
+                    <i class="fas fa-shopping-bag"></i> Products
+                </div>
+                <div class="tab" data-tab="transport">
+                    <i class="fas fa-taxi"></i> Transport
+                </div>
+                <div class="tab" data-tab="accommodation">
+                    <i class="fas fa-hotel"></i> Accommodation
+                </div>
+            </div>
+            
+            <!-- Products Tab -->
+            <div class="tab-content active" id="products-tab">
+                <div class="search-section">
+                    <h2 class="section-title"><i class="fas fa-search"></i> Find Fair Prices for Products</h2>
+                    <div class="input-group">
+                        <label for="product-search">Product Name</label>
+                        <input type="text" id="product-search" placeholder="Enter product name (e.g., spices, saree, souvenirs)">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="product-city">City</label>
+                        <input type="text" id="product-city" placeholder="Enter city name">
+                        <div class="info-text">Popular Indian Cities:</div>
+                        <div class="indian-cities">
+                            <div class="city-btn" data-city="Delhi">Delhi</div>
+                            <div class="city-btn" data-city="Mumbai">Mumbai</div>
+                            <div class="city-btn" data-city="Jaipur">Jaipur</div>
+                            <div class="city-btn" data-city="Varanasi">Varanasi</div>
+                        </div>
+                    </div>
+                    
+                    <button id="search-products">
+                        <i class="fas fa-search"></i> Find Fair Prices
+                    </button>
+                </div>
+                
+                <div class="results-section">
+                    <div class="loader" id="products-loader">
+                        <div class="spinner"></div>
+                        <p>Searching for fair prices...</p>
+                    </div>
+                    
+                    <div class="results-grid" id="products-results">
+                        <div class="no-results">
+                            <i class="fas fa-shopping-bag"></i>
+                            <h3>Search for product prices</h3>
+                            <p>Enter a product name and city to see fair price ranges</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Transport Tab -->
+            <div class="tab-content" id="transport-tab">
+                <div class="search-section">
+                    <h2 class="section-title"><i class="fas fa-route"></i> Check Transport Fair Prices</h2>
+                    <div class="input-group">
+                        <label for="transport-type">Transport Type</label>
+                        <select id="transport-type">
+                            <option value="auto">Auto Rickshaw</option>
+                            <option value="taxi">Taxi</option>
+                            <option value="cab">Ride-sharing Cab</option>
+                            <option value="cycle">Cycle Rickshaw</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="transport-city">City</label>
+                        <input type="text" id="transport-city" placeholder="Enter city name">
+                        <div class="info-text">Popular Indian Cities:</div>
+                        <div class="indian-cities">
+                            <div class="city-btn" data-city="Delhi">Delhi</div>
+                            <div class="city-btn" data-city="Mumbai">Mumbai</div>
+                            <div class="city-btn" data-city="Bangalore">Bangalore</div>
+                            <div class="city-btn" data-city="Kolkata">Kolkata</div>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="distance">Distance (km)</label>
+                        <input type="number" id="distance" placeholder="Enter distance in kilometers" min="1" max="100">
+                    </div>
+                    
+                    <button id="search-transport">
+                        <i class="fas fa-calculator"></i> Calculate Fair Price
+                    </button>
+                </div>
+                
+                <div class="results-section">
+                    <div class="loader" id="transport-loader">
+                        <div class="spinner"></div>
+                        <p>Calculating fair prices...</p>
+                    </div>
+                    
+                    <div class="results-grid" id="transport-results">
+                        <div class="no-results">
+                            <i class="fas fa-taxi"></i>
+                            <h3>Check transport prices</h3>
+                            <p>Select transport type, enter city and distance to see fair prices</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Accommodation Tab -->
+            <div class="tab-content" id="accommodation-tab">
+                <div class="search-section">
+                    <h2 class="section-title"><i class="fas fa-bed"></i> Find Accommodation Fair Prices</h2>
+                    <div class="input-group">
+                        <label for="accommodation-type">Accommodation Type</label>
+                        <select id="accommodation-type">
+                            <option value="budget">Budget Hotel/Guesthouse</option>
+                            <option value="mid">Mid-range Hotel</option>
+                            <option value="luxury">Luxury Hotel</option>
+                            <option value="homestay">Homestay</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="accommodation-city">City</label>
+                        <input type="text" id="accommodation-city" placeholder="Enter city name">
+                        <div class="info-text">Popular Indian Cities:</div>
+                        <div class="indian-cities">
+                            <div class="city-btn" data-city="Goa">Goa</div>
+                            <div class="city-btn" data-city="Jaipur">Jaipur</div>
+                            <div class="city-btn" data-city="Kerala">Kerala</div>
+                            <div class="city-btn" data-city="Agra">Agra</div>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="season">Season</label>
+                        <select id="season">
+                            <option value="peak">Peak Season (Oct-Mar)</option>
+                            <option value="shoulder">Shoulder Season (Apr-Jun)</option>
+                            <option value="off">Off Season (Jul-Sep)</option>
+                        </select>
+                    </div>
+                    
+                    <button id="search-accommodation">
+                        <i class="fas fa-search"></i> Find Fair Prices
+                    </button>
+                </div>
+                
+                <div class="results-section">
+                    <div class="loader" id="accommodation-loader">
+                        <div class="spinner"></div>
+                        <p>Searching for accommodation prices...</p>
+                    </div>
+                    
+                    <div class="results-grid" id="accommodation-results">
+                        <div class="no-results">
+                            <i class="fas fa-hotel"></i>
+                            <h3>Check accommodation prices</h3>
+                            <p>Select accommodation type, city and season to see fair prices</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="disclaimer">
+            <p><strong>Note:</strong> Prices shown are estimates based on average market rates. Actual prices may vary based on specific circumstances, quality, and negotiation skills. Always confirm prices before making purchases.</p>
+        </div>
+        
+        <footer>
+            <p>India Fair Price Guide © 2023 | Helping tourists avoid scams and pay fair prices</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab functionality
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Update active tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show active tab content
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                });
+            });
+            
+            // City buttons functionality
+            const cityButtons = document.querySelectorAll('.city-btn');
+            
+            cityButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const city = this.getAttribute('data-city');
+                    const activeTab = document.querySelector('.tab.active').getAttribute('data-tab');
+                    document.getElementById(`${activeTab}-city`).value = city;
+                });
+            });
+            
+            // Product search functionality
+            const searchProductsBtn = document.getElementById('search-products');
+            
+            searchProductsBtn.addEventListener('click', function() {
+                const product = document.getElementById('product-search').value.trim();
+                const city = document.getElementById('product-city').value.trim();
+                
+                if (!product || !city) {
+                    alert('Please enter both product name and city');
+                    return;
+                }
+                
+                // Show loader
+                document.getElementById('products-loader').style.display = 'block';
+                document.getElementById('products-results').innerHTML = '';
+                
+                // Simulate API call
+                setTimeout(() => {
+                    document.getElementById('products-loader').style.display = 'none';
+                    displayProductResults(product, city);
+                }, 1500);
+            });
+            
+            // Transport search functionality
+            const searchTransportBtn = document.getElementById('search-transport');
+            
+            searchTransportBtn.addEventListener('click', function() {
+                const transportType = document.getElementById('transport-type').value;
+                const city = document.getElementById('transport-city').value.trim();
+                const distance = document.getElementById('distance').value;
+                
+                if (!city || !distance) {
+                    alert('Please enter both city and distance');
+                    return;
+                }
+                
+                // Show loader
+                document.getElementById('transport-loader').style.display = 'block';
+                document.getElementById('transport-results').innerHTML = '';
+                
+                // Simulate API call
+                setTimeout(() => {
+                    document.getElementById('transport-loader').style.display = 'none';
+                    displayTransportResults(transportType, city, distance);
+                }, 1500);
+            });
+            
+            // Accommodation search functionality
+            const searchAccommodationBtn = document.getElementById('search-accommodation');
+            
+            searchAccommodationBtn.addEventListener('click', function() {
+                const accommodationType = document.getElementById('accommodation-type').value;
+                const city = document.getElementById('accommodation-city').value.trim();
+                const season = document.getElementById('season').value;
+                
+                if (!city) {
+                    alert('Please enter a city');
+                    return;
+                }
+                
+                // Show loader
+                document.getElementById('accommodation-loader').style.display = 'block';
+                document.getElementById('accommodation-results').innerHTML = '';
+                
+                // Simulate API call
+                setTimeout(() => {
+                    document.getElementById('accommodation-loader').style.display = 'none';
+                    displayAccommodationResults(accommodationType, city, season);
+                }, 1500);
+            });
+            
+            // Display functions
+            function displayProductResults(product, city) {
+                const resultsContainer = document.getElementById('products-results');
+                
+                // Sample product data based on type and city
+                const productData = {
+                    'spices': {
+                        'Delhi': { fair: '₹200-400', high: '₹600+', per: '100g' },
+                        'Mumbai': { fair: '₹250-450', high: '₹650+', per: '100g' },
+                        'Jaipur': { fair: '₹180-350', high: '₹500+', per: '100g' },
+                        'default': { fair: '₹200-450', high: '₹600+', per: '100g' }
+                    },
+                    'saree': {
+                        'Delhi': { fair: '₹1500-4000', high: '₹6000+', per: 'piece' },
+                        'Mumbai': { fair: '₹2000-5000', high: '₹7000+', per: 'piece' },
+                        'Varanasi': { fair: '₹2500-6000', high: '₹8000+', per: 'piece' },
+                        'default': { fair: '₹1500-5000', high: '₹7000+', per: 'piece' }
+                    },
+                    'souvenirs': {
+                        'Delhi': { fair: '₹100-500', high: '₹800+', per: 'item' },
+                        'Jaipur': { fair: '₹150-400', high: '₹600+', per: 'item' },
+                        'default': { fair: '₹100-500', high: '₹700+', per: 'item' }
+                    },
+                    'default': {
+                        'default': { fair: '₹100-1000', high: '₹1500+', per: 'item' }
+                    }
+                };
+                
+                // Get the relevant data
+                const productKey = Object.keys(productData).includes(product.toLowerCase()) ? product.toLowerCase() : 'default';
+                const cityKey = Object.keys(productData[productKey]).includes(city) ? city : 'default';
+                const data = productData[productKey][cityKey];
+                
+                resultsContainer.innerHTML = `
+                    <div class="price-card">
+                        <div class="card-header product-header">
+                            <h3>${product.charAt(0).toUpperCase() + product.slice(1)}</h3>
+                            <span><i class="fas fa-shopping-bag"></i></span>
+                        </div>
+                        <div class="card-body">
+                            <div class="price-range">Fair Price: ${data.fair} per ${data.per}</div>
+                            
+                            <div class="price-comparison">
+                                <div class="price-bubble fair">
+                                    <div class="bubble-label">Fair Price</div>
+                                    <div class="bubble-value">${data.fair}</div>
+                                </div>
+                                <div class="price-bubble high">
+                                    <div class="bubble-label">Potential Scam</div>
+                                    <div class="bubble-value">${data.high}</div>
+                                </div>
+                            </div>
+                            
+                            <div class="price-details">
+                                <div class="price-item">
+                                    <span>City:</span>
+                                    <span>${city}</span>
+                                </div>
+                                <div class="price-item">
+                                    <span>Price per:</span>
+                                    <span>${data.per}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="tips">
+                                <h4><i class="fas fa-lightbulb"></i> Shopping Tips</h4>
+                                <ul>
+                                    <li>Always negotiate politely - start at 50-60% of the asking price</li>
+                                    <li>Compare prices at multiple shops before buying</li>
+                                    <li>Check quality carefully - higher prices should reflect better quality</li>
+                                    <li>Ask locals for recommended shops</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            function displayTransportResults(type, city, distance) {
+                const resultsContainer = document.getElementById('transport-results');
+                
+                // Base rates per km for different cities and transport types
+                const transportData = {
+                    'auto': {
+                        'Delhi': { base: 25, perKm: 12 },
+                        'Mumbai': { base: 30, perKm: 14 },
+                        'Bangalore': { base: 28, perKm: 13 },
+                        'Kolkata': { base: 24, perKm: 11 },
+                        'default': { base: 25, perKm: 12 }
+                    },
+                    'taxi': {
+                        'Delhi': { base: 50, perKm: 15 },
+                        'Mumbai': { base: 60, perKm: 18 },
+                        'Bangalore': { base: 55, perKm: 16 },
+                        'Kolkata': { base: 45, perKm: 14 },
+                        'default': { base: 50, perKm: 15 }
+                    },
+                    'cab': {
+                        'Delhi': { base: 40, perKm: 13 },
+                        'Mumbai': { base: 45, perKm: 14 },
+                        'Bangalore': { base: 42, perKm: 13 },
+                        'Kolkata': { base: 38, perKm: 12 },
+                        'default': { base: 40, perKm: 13 }
+                    },
+                    'cycle': {
+                        'Delhi': { base: 20, perKm: 10 },
+                        'Mumbai': { base: 25, perKm: 12 },
+                        'default': { base: 20, perKm: 10 }
+                    }
+                };
+                
+                // Get the relevant data
+                const cityKey = Object.keys(transportData[type]).includes(city) ? city : 'default';
+                const data = transportData[type][cityKey];
+                
+                // Calculate fare
+                const fare = Math.round(data.base + (data.perKm * distance));
+                const scamFare = Math.round(fare * 1.8); // 80% higher for scam price
+                
+                const transportNames = {
+                    'auto': 'Auto Rickshaw',
+                    'taxi': 'Taxi',
+                    'cab': 'Ride-sharing Cab',
+                    'cycle': 'Cycle Rickshaw'
+                };
+                
+                resultsContainer.innerHTML = `
+                    <div class="price-card">
+                        <div class="card-header transport-header">
+                            <h3>${transportNames[type]}</h3>
+                            <span><i class="fas fa-taxi"></i></span>
+                        </div>
+                        <div class="card-body">
+                            <div class="price-range">Fair Price: ₹${fare} for ${distance} km</div>
+                            
+                            <div class="price-comparison">
+                                <div class="price-bubble fair">
+                                    <div class="bubble-label">Fair Price</div>
+                                    <div class="bubble-value">₹${fare}</div>
+                                </div>
+                                <div class="price-bubble high">
+                                    <div class="bubble-label">Potential Scam</div>
+                                    <div class="bubble-value">₹${scamFare}+</div>
+                                </div>
+                            </div>
+                            
+                            <div class="price-details">
+                                <div class="price-item">
+                                    <span>City:</span>
+                                    <span>${city}</span>
+                                </div>
+                                <div class="price-item">
+                                    <span>Distance:</span>
+                                    <span>${distance} km</span>
+                                </div>
+                                <div class="price-item">
+                                    <span>Base fare:</span>
+                                    <span>₹${data.base}</span>
+                                </div>
+                                <div class="price-item">
+                                    <span>Per km:</span>
+                                    <span>₹${data.perKm}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="tips">
+                                <h4><i class="fas fa-lightbulb"></i> Transport Tips</h4>
+                                <ul>
+                                    <li>Always ask for the meter or agree on a price before starting your journey</li>
+                                    <li>Use ride-sharing apps for transparent pricing</li>
+                                    <li>Ask your hotel for estimated fares to your destination</li>
+                                    <li>Be aware of common scams like broken meters or longer routes</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            function displayAccommodationResults(type, city, season) {
+                const resultsContainer = document.getElementById('accommodation-results');
+                
+                // Rates per night for different cities and accommodation types
+                const accommodationData = {
+                    'budget': {
+                        'Goa': { low: 800, high: 1500 },
+                        'Jaipur': { low: 600, high: 1200 },
+                        'Kerala': { low: 700, high: 1300 },
+                        'Agra': { low: 500, high: 1000 },
+                        'default': { low: 600, high: 1200 }
+                    },
+                    'mid': {
+                        'Goa': { low: 2500, high: 4000 },
+                        'Jaipur': { low: 2000, high: 3500 },
+                        'Kerala': { low: 2200, high: 3800 },
+                        'Agra': { low: 1800, high: 3000 },
+                        'default': { low: 2000, high: 3500 }
+                    },
+                    'luxury': {
+                        'Goa': { low: 6000, high: 12000 },
+                        'Jaipur': { low: 5000, high: 10000 },
+                        'Kerala': { low: 5500, high: 11000 },
+                        'Agra': { low: 4500, high: 9000 },
+                        'default': { low: 5000, high: 10000 }
+                    },
+                    'homestay': {
+                        'Goa': { low: 1000, high: 2000 },
+                        'Jaipur': { low: 800, high: 1500 },
+                        'Kerala': { low: 900, high: 1800 },
+                        'default': { low: 800, high: 1600 }
+                    }
+                };
+                
+                // Season multipliers
+                const seasonMultipliers = {
+                    'peak': 1.4,
+                    'shoulder': 1.0,
+                    'off': 0.7
+                };
+                
+                // Get the relevant data
+                const cityKey = Object.keys(accommodationData[type]).includes(city) ? city : 'default';
+                let data = accommodationData[type][cityKey];
+                
+                // Apply season multiplier
+                const multiplier = seasonMultipliers[season];
+                const lowPrice = Math.round(data.low * multiplier);
+                const highPrice = Math.round(data.high * multiplier);
+                const scamPrice = Math.round(highPrice * 1.5);
+                
+                const accommodationNames = {
+                    'budget': 'Budget Hotel/Guesthouse',
+                    'mid': 'Mid-range Hotel',
+                    'luxury': 'Luxury Hotel',
+                    'homestay': 'Homestay'
+                };
+                
+                const seasonNames = {
+                    'peak': 'Peak Season (Oct-Mar)',
+                    'shoulder': 'Shoulder Season (Apr-Jun)',
+                    'off': 'Off Season (Jul-Sep)'
+                };
+                
+                resultsContainer.innerHTML = `
+                    <div class="price-card">
+                        <div class="card-header accommodation-header">
+                            <h3>${accommodationNames[type]}</h3>
+                            <span><i class="fas fa-hotel"></i></span>
+                        </div>
+                        <div class="card-body">
+                            <div class="price-range">Fair Price: ₹${lowPrice} - ₹${highPrice} per night</div>
+                            
+                            <div class="price-comparison">
+                                <div class="price-bubble fair">
+                                    <div class="bubble-label">Fair Price Range</div>
+                                    <div class="bubble-value">₹${lowPrice}-${highPrice}</div>
+                                </div>
+                                <div class="price-bubble high">
+                                    <div class="bubble-label">Potential Scam</div>
+                                    <div class="bubble-value">₹${scamPrice}+</div>
+                                </div>
+                            </div>
+                            
+                            <div class="price-details">
+                                <div class="price-item">
+                                    <span>City:</span>
+                                    <span>${city}</span>
+                                </div>
+                                <div class="price-item">
+                                    <span>Season:</span>
+                                    <span>${seasonNames[season]}</span>
+                                </div>
+                                <div class="price-item">
+                                    <span>Price per:</span>
+                                    <span>night</span>
+                                </div>
+                            </div>
+                            
+                            <div class="tips">
+                                <h4><i class="fas fa-lightbulb"></i> Accommodation Tips</h4>
+                                <ul>
+                                    <li>Book through reputable websites that show reviews</li>
+                                    <li>Always check the room before paying</li>
+                                    <li>Ask about additional charges (taxes, service fees)</li>
+                                    <li>Consider location - prices may be higher in tourist areas</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

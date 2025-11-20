@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tourist Safety - Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.3);
+      width: 350px;
+      max-width: 95vw;
+      text-align: center;
+      animation: fadeIn .5s ease-in-out;
+    }
+
+    @media (min-width: 900px) {
+      .container {
+        width: 500px;
+      }
+      #loginForm {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px 30px;
+        text-align: left;
+      }
+      #loginForm label, #loginForm input {
+        width: 100%;
+        margin: 0;
+      }
+      #loginForm button {
+        grid-column: span 2;
+        width: 100%;
+      }
+      #message {
+        grid-column: span 2;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        width: 98vw;
+        padding: 10px;
+      }
+      #loginForm label, #loginForm input, #loginForm button {
+        width: 100%;
+      }
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateX(-50px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    h2 {
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      text-align: left;
+      font-weight: bold;
+    }
+
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    input:focus {
+      border-color: #2980b9;
+      box-shadow: 0 0 8px rgba(41, 128, 185, 0.5);
+    }
+
+    button {
+      width: 95%;
+      padding: 12px;
+      background: #2980b9;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #1f6691;
+    }
+
+    p {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    a {
+      color: #27ae60;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    #message {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #e74c3c;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Login to Your Account</h2>
+    <form id="loginForm">
+  <label for="name">Full Name</label>
+  <input type="text" id="name" required>
+
+  <label for="dob">Date of Birth</label>
+  <input type="date" id="dob" required>
+
+  <label for="passport_number">Passport Number</label>
+  <input type="text" id="passport_number" required>
+
+  <label for="issue_date">Passport Issue Date</label>
+  <input type="date" id="issue_date" required>
+
+  <label for="destination_place">Destination Place</label>
+  <input type="text" id="destination_place" required>
+
+  <label for="user_private_key">Enter Your Private Key</label>
+  <input type="text" id="user_private_key" required>
+
+  <button type="submit">Login</button>
+</form>
+
+<p id="message"></p>
+    <p>Don’t have an account? <a href="signup.html">Sign Up</a></p>
+  </div>
+
+  <script>
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+  return null;
+}
+
+(async () => {
+  const jwt = getCookie('jwt');
+  if (jwt) {
+    const res = await fetch('http://localhost:3000/api/verify-token', {
+      method: 'GET',
+      headers: { 'authorization': jwt }
+    });
+    const result = await res.json();
+    if (res.status === 200 && result.valid) {
+      window.location.href = '../user_dashboard/index.html';
+    }
+    // else do nothing (token invalid or expired)
+  }
+})();
+
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const submitBtn = e.target.querySelector('button[type="submit"]') || document.querySelector('#loginForm button[type="submit"]');
+  const msgEl = document.getElementById('message');
+  if (msgEl) { msgEl.style.color = '#2c3e50'; msgEl.innerText = 'Loading...'; }
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.style.opacity = '0.7'; }
+  const data = {
+    name: document.getElementById('name').value.trim(),
+    dob: document.getElementById('dob').value.trim(),
+    passport_number: document.getElementById('passport_number').value.trim(),
+    issue_date: document.getElementById('issue_date').value.trim(),
+    destination_place: document.getElementById('destination_place').value.trim(),
+    user_private_key: document.getElementById('user_private_key').value.trim()
+  };
+  try {
+    const res = await fetch('http://localhost:3000/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    const result = await res.json();
+    if (res.status === 200 && result.success && result.token) {
+      if (msgEl) { msgEl.style.color = 'green'; msgEl.innerText = '✅ Login successful! Redirecting...'; }
+      const expires = new Date(Date.now() + 30*24*60*60*1000).toUTCString();
+      document.cookie = `jwt=${result.token}; expires=${expires}; path=/`;
+      // Persist user_data_hash for subsequent signout requests
+      try { localStorage.setItem('user_data_hash', result.user_data_hash || ''); } catch(e) {}
+      setTimeout(() => window.location.href = '../user_dashboard/index.html', 1500);
+    } else {
+      if (msgEl) { msgEl.style.color = 'red'; msgEl.innerText = '❌ Invalid user ID or password'; }
+    }
+  } catch(err) {
+    if (msgEl) { msgEl.style.color = 'red'; msgEl.innerText = '❌ Network error. Please try again.'; }
+  } finally {
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = '1'; }
+  }
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Hotel Reviews</title>
+  <meta charset="utf-8"/>
+  <style>
+    body{font-family:sans-serif;background:#0b1220;color:#e9f1ff;padding:30px;}
+    .card{background:#121a2b;padding:20px;border-radius:12px;max-width:600px;margin:auto;box-shadow:0 2px 8px #0002;}
+    h2{color:#79c0ff;}
+    .review{margin:16px 0;padding:12px;background:#181f33;border-radius:8px;}
+    .back{color:#79c0ff;text-decoration:underline;cursor:pointer;display:inline-block;margin-bottom:20px;}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <span class="back" onclick="window.history.back()">← Back</span>
+    <h2 id="hotelName">Hotel</h2>
+    <div id="reviews">Loading reviews...</div>
+  </div>
+  <script>
+    // Get hotel name from query string
+    const urlParams = new URLSearchParams(window.location.search);
+    const hotelName = urlParams.get('name') || 'Hotel';
+    document.getElementById('hotelName').textContent = hotelName;
+
+    // Example: Fetch reviews from a (mock) API or Google Places API (not public, so fallback to placeholder)
+    async function fetchReviews(name) {
+      // Placeholder: Replace with real API call if available
+      // Google Places API requires server-side proxy and API key
+      // Here we use a mock API for demonstration
+      try {
+        // const resp = await fetch(`https://your-review-api.com/reviews?hotel=${encodeURIComponent(name)}`);
+        // const data = await resp.json();
+        // return data.reviews;
+        // Fallback: static reviews
+        return [
+          {author:'Amit',rating:5,text:'Great stay, very clean and safe!'},
+          {author:'Priya',rating:4,text:'Good location, friendly staff.'},
+          {author:'John',rating:3,text:'Average experience, but value for money.'}
+        ];
+      } catch {
+        return [{author:'System',rating:0,text:'No reviews found.'}];
+      }
+    }
+
+    fetchReviews(hotelName).then(reviews => {
+      const reviewsDiv = document.getElementById('reviews');
+      reviewsDiv.innerHTML = '';
+      reviews.forEach(r => {
+        reviewsDiv.innerHTML += `<div class='review'><b>${r.author}</b> <span style='color:gold;'>${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span><br>${r.text}</div>`;
+      });
+    });
+  </script>
+</body>
+</html>

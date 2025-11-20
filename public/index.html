@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title data-i18n="app.title">SMART T🌍URISM</title>
+
+    <!-- Bootstrap -->
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+      integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"
+      integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Leaflet + plugins (CDN, free) -->
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      crossorigin=""
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
+    />
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      crossorigin=""
+    ></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+    <script src="js/i18n.js"></script>
+  </head>
+  <body>
+    <script>
+      var isMenuToggled = false;
+      // Redirect authenticated users to dashboard
+      function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(";").shift();
+        return null;
+      }
+      (async () => {
+        try {
+          const jwt = getCookie("jwt");
+          if (!jwt) return;
+          const res = await fetch("http://localhost:3000/api/verify-token", {
+            method: "GET",
+            headers: { authorization: jwt },
+          });
+          const j = await res.json();
+          if (res.status === 200 && j.valid) {
+            window.location.href = "../user_dashboard/index.html";
+          }
+        } catch (e) {
+          console.error("Error verifying token:", e);
+        }
+      })();
+
+      // Initialize i18n for the public page
+      if (window.I18N && typeof window.I18N.init === 'function') {
+        window.I18N.init('en');
+      }
+
+      function toggleMenu() {
+        const navbarNav = document.getElementById("navbarNav");
+        if (isMenuToggled) {
+          navbarNav.classList.add("hide");
+        } else {
+          navbarNav.classList.remove("hide");
+        }
+        isMenuToggled = !isMenuToggled;
+      }
+    </script>
+
+    <header>
+      <nav class="navbar navbar-expand-lg bg-body-tertiary w-100">
+        <div class="container-fluid">
+          <h1 class="website-logo" id="websiteLogo" data-i18n="app.title">SMART T🌍URISM</h1>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+            onclick="toggleMenu()"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <select
+          id="langSelect"
+          style="
+            background: var(--card);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 6px 8px;
+            border-radius: 8px;
+          "
+        >
+          <option value="en">EN</option>
+          <option value="hi">हिं</option>
+          <option value="ta">தமி</option>
+        </select>
+              </li>
+              <li class="nav-item">
+                <button id="btnRefresh" title="Refresh data for last-known location">
+          <span data-i18n="app.actions.refresh">🔁 Refresh</span>
+        </button>
+              </li>
+              <li class="nav-item">
+                <button id="signup" class="sign" data-i18n="signup.cta">SignUp</button>
+              </li>
+              <li class="nav-item">
+                <button id="login" class="sign" data-i18n="login.cta">Log In</button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- MAP -->
+    <div id="mapwrap">
+      <div id="map"></div>
+    </div>
+
+    <main>
+      <div class="grid">
+        <section class="card" id="cardAddress">
+          <h2 data-i18n="dashboard.address">
+            🏠 Address <span id="addrStatus" class="pill muted">idle</span>
+          </h2>
+          <div id="address">—</div>
+          <div id="admin" class="small muted"></div>
+          <div id="coords" class="small muted">—</div>
+        </section>
+
+        <section class="card" id="cardRecentCrimes">
+          <h2 data-i18n="dashboard.recentCrimes">
+            🔎 Recent nearby crimes (10 km)
+            <span id="crimeStatus" class="pill muted">idle</span>
+          </h2>
+          <div id="crimeContent">
+            <div class="small muted">No data yet.</div>
+          </div>
+          <div
+            class="small muted"
+            style="margin-top: 8px; color: rgb(250, 250, 131)"
+          >
+            ⚠︎ These info are not to make you afraid, these are for making you
+            aware.
+          </div>
+        </section>
+
+        <section class="card" id="cardWeather">
+          <h2 data-i18n="dashboard.weather">🌦️ Weather <span id="wxStatus" class="pill muted">idle</span></h2>
+          <div class="row">
+            <div>Temp: <span id="temp" class="kpi">—</span>°C</div>
+            <div>Wind: <span id="wind" class="kpi">—</span> km/h</div>
+          </div>
+          <div class="small muted">
+            Weather: <span id="wcode">—</span> • Time: <span id="wtime">—</span>
+          </div>
+        </section>
+
+        <section class="card tourist-section">
+          <h2 data-i18n="dashboard.nearbyTourist">🌍 Nearby Tourist Places</h2>
+          <button id="loadTouristBtn">Find Tourist Places</button>
+          <ul id="touristResults" class="list-two-col"></ul>
+        </section>
+
+        <section class="card" id="cardPolice">
+          <h2 data-i18n="dashboard.nearbyPolice">
+            🚓 Nearby Police <span id="polStatus" class="pill muted">idle</span>
+          </h2>
+          <ul id="policeList" class="list-two-col"></ul>
+        </section>
+
+        <section class="card" id="cardHosp">
+          <h2 data-i18n="dashboard.hospitals">
+            🏥 Hospitals <span id="hospStatus" class="pill muted">idle</span>
+          </h2>
+          <ul id="hospList" class="list-two-col"></ul>
+        </section>
+
+        <section class="card" id="cardFire">
+          <h2 data-i18n="dashboard.fireStations">
+            🚒 Fire Stations
+            <span id="fireStatus" class="pill muted">idle</span>
+          </h2>
+          <ul id="fireList" class="list-two-col"></ul>
+        </section>
+
+        <section class="card" id="cardRestricted">
+          <h2 data-i18n="dashboard.restricted">
+            🪖 Restricted / Military
+            <span id="milStatus" class="pill muted">idle</span>
+          </h2>
+          <ul id="milList" class="list-two-col"></ul>
+        </section>
+
+        <section class="card" id="cardGDACS">
+          <h2 data-i18n="dashboard.gdacs">
+            ⚠️ Disaster Alerts (GDACS)
+            <span id="gdacsStatus" class="pill muted">idle</span>
+          </h2>
+          <ul id="gdacsList"></ul>
+        </section>
+
+        <section class="card" id="cardRelief">
+          <h2 data-i18n="dashboard.relief">
+            📰 Security / Terrorism Reports (ReliefWeb)
+            <span id="reliefStatus" class="pill muted">idle</span>
+          </h2>
+          <ul id="reliefList"></ul>
+        </section>
+      </div>
+
+      <!-- <div class="sp"></div>
+  <section class="card">
+    <h2>ℹ️ Notes & data sources</h2>
+    <ul class="small">
+      <li>Data sources used: OpenStreetMap (Nominatim + Overpass), Open-Meteo, GDACS RSS, ReliefWeb API, Chicago/LA/NY city open-data APIs, data.gov.in (India aggregated). These are all free/open endpoints. </li>
+      <li>If a city publishes incident-level crime data with coordinates (Chicago/LA/NY), the map will show points. If only aggregated datasets exist for your region (many India datasets), the app will show a table instead.</li>
+      <li>This page polls location when you move (≥1 meter). For accuracy and battery reasons, mobile may provide limited precision.</li>
+    </ul>
+  </section> -->
+    </main>
+
+    <footer>&copy Copyright 2025 • All Rights are reserved</footer>
+    <script type="text/javascript" src="script.js"></script>
+  </body>
+</html>

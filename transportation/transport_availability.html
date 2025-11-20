@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMART TOURISM</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 25px 0;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .app-container {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .search-section {
+            padding: 25px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+        
+        .input-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .input-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+        
+        label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #444;
+        }
+        
+        input, select {
+            padding: 14px 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: #4dabf7;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2);
+        }
+        
+        .location-input {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .transport-types {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .transport-type {
+            flex: 1;
+            text-align: center;
+            padding: 20px 15px;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid #dee2e6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .transport-type:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .transport-type.active {
+            background: #4dabf7;
+            color: white;
+            border-color: #339af0;
+        }
+        
+        .transport-type i {
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+        
+        .transport-type span {
+            font-weight: 600;
+        }
+        
+        button {
+            padding: 16px 25px;
+            background: #4dabf7;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        button:hover {
+            background: #339af0;
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .results-section {
+            padding: 25px;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #444;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        
+        .transport-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+            border: 1px solid #e9ecef;
+        }
+        
+        .transport-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        .card-header {
+            padding: 18px 20px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .bus-header {
+            background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
+        }
+        
+        .train-header {
+            background: linear-gradient(135deg, #5f7aff 0%, #6e8efb 100%);
+        }
+        
+        .plane-header {
+            background: linear-gradient(135deg, #2ecc71 0%, #4cd964 100%);
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        .route {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .timing {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            color: #666;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f3f5;
+        }
+        
+        .duration {
+            text-align: center;
+            margin: 15px 0;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+        
+        .price {
+            font-size: 1.6rem;
+            font-weight: 700;
+            text-align: center;
+            margin: 15px 0;
+            color: #2c3e50;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 50px 40px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            grid-column: 1 / -1;
+        }
+        
+        .no-results i {
+            font-size: 3rem;
+            color: #adb5bd;
+            margin-bottom: 20px;
+        }
+        
+        .loader {
+            text-align: center;
+            padding: 50px 40px;
+            grid-column: 1 / -1;
+            display: none;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4dabf7;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .location-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .location-btn {
+            padding: 10px 14px;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+        
+        .location-btn:hover {
+            background: #f8f9fa;
+            border-color: #adb5bd;
+        }
+        
+        .api-info {
+            text-align: center;
+            margin-top: 30px;
+            color: white;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .indian-cities {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .indian-cities {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .city-btn {
+            padding: 8px 5px;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .city-btn:hover {
+            background: #4dabf7;
+            color: white;
+            border-color: #339af0;
+        }
+        
+        .info-text {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>India Transport Timings</h1>
+            <p class="tagline">Find bus, train, and flight schedules across India</p>
+        </header>
+        
+        <div class="app-container">
+            <section class="search-section">
+                <div class="input-row">
+                    <div class="location-input">
+                        <label for="current-location">From</label>
+                        <input type="text" id="current-location" placeholder="Enter current location (e.g., Delhi)">
+                        <div class="location-buttons">
+                            <button class="location-btn" id="detect-location">
+                                <i class="fas fa-location-arrow"></i> Detect My Location
+                            </button>
+                        </div>
+                        
+                        <div class="info-text">Popular Indian Cities:</div>
+                        <div class="indian-cities">
+                            <div class="city-btn" data-city="Mumbai">Mumbai</div>
+                            <div class="city-btn" data-city="Delhi">Delhi</div>
+                            <div class="city-btn" data-city="Bangalore">Bangalore</div>
+                            <div class="city-btn" data-city="Chennai">Chennai</div>
+                            <div class="city-btn" data-city="Kolkata">Kolkata</div>
+                            <div class="city-btn" data-city="Hyderabad">Hyderabad</div>
+                            <div class="city-btn" data-city="Pune">Pune</div>
+                            <div class="city-btn" data-city="Ahmedabad">Ahmedabad</div>
+                        </div>
+                    </div>
+                    
+                    <div class="location-input">
+                        <label for="destination">To</label>
+                        <input type="text" id="destination" placeholder="Enter destination (e.g., Mumbai)">
+                        <div class="location-buttons">
+                            <button class="location-btn" id="popular-destinations">
+                                <i class="fas fa-landmark"></i> Show Popular Destinations
+                            </button>
+                        </div>
+                        
+                        <div class="info-text">Popular Indian Destinations:</div>
+                        <div class="indian-cities">
+                            <div class="city-btn" data-city="Jaipur">Jaipur</div>
+                            <div class="city-btn" data-city="Goa">Goa</div>
+                            <div class="city-btn" data-city="Kerala">Kerala</div>
+                            <div class="city-btn" data-city="Agra">Agra</div>
+                            <div class="city-btn" data-city="Varanasi">Varanasi</div>
+                            <div class="city-btn" data-city="Amritsar">Amritsar</div>
+                            <div class="city-btn" data-city="Darjeeling">Darjeeling</div>
+                            <div class="city-btn" data-city="Rishikesh">Rishikesh</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label>Transport Type</label>
+                    <div class="transport-types">
+                        <div class="transport-type active" data-type="all">
+                            <i class="fas fa-bus"></i>
+                            <span>All Transports</span>
+                        </div>
+                        <div class="transport-type" data-type="bus">
+                            <i class="fas fa-bus"></i>
+                            <span>Bus</span>
+                        </div>
+                        <div class="transport-type" data-type="train">
+                            <i class="fas fa-train"></i>
+                            <span>Train</span>
+                        </div>
+                        <div class="transport-type" data-type="plane">
+                            <i class="fas fa-plane"></i>
+                            <span>Flight</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="date">Travel Date</label>
+                    <input type="date" id="date">
+                </div>
+                
+                <button id="search-btn">
+                    <i class="fas fa-search"></i> Search Transport Options
+                </button>
+            </section>
+            
+            <section class="results-section">
+                <h2 class="section-title"><i class="fas fa-list"></i> Available Transport Options</h2>
+                
+                <div class="loader" id="loader">
+                    <div class="spinner"></div>
+                    <p>Searching for transport options...</p>
+                </div>
+                
+                <div class="results-grid" id="results">
+                    <div class="no-results">
+                        <i class="fas fa-search"></i>
+                        <h3>Search for transport options</h3>
+                        <p>Enter your current location and destination to find available buses, trains, and flights in India.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <div class="api-info">
+            <p>This application uses simulated API responses for demonstration purposes.</p>
+            <p>In a real application, you would integrate with Indian transport APIs like IRCTC for trains, RedBus for buses, and Skyscanner for flights.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentLocationInput = document.getElementById('current-location');
+            const destinationInput = document.getElementById('destination');
+            const detectLocationBtn = document.getElementById('detect-location');
+            const popularDestinationsBtn = document.getElementById('popular-destinations');
+            const transportTypes = document.querySelectorAll('.transport-type');
+            const searchBtn = document.getElementById('search-btn');
+            const resultsContainer = document.getElementById('results');
+            const loader = document.getElementById('loader');
+            const dateInput = document.getElementById('date');
+            const cityButtons = document.querySelectorAll('.city-btn');
+            
+            // Set default date to tomorrow
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            dateInput.value = tomorrow.toISOString().split('T')[0];
+            
+            let selectedTransportType = 'all';
+            
+            // Transport type selection
+            transportTypes.forEach(type => {
+                type.addEventListener('click', function() {
+                    transportTypes.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    selectedTransportType = this.getAttribute('data-type');
+                });
+            });
+            
+            // City buttons
+            cityButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const city = this.getAttribute('data-city');
+                    if (this.closest('.location-input').querySelector('input') === currentLocationInput) {
+                        currentLocationInput.value = city;
+                    } else {
+                        destinationInput.value = city;
+                    }
+                });
+            });
+            
+            // Detect location button
+            detectLocationBtn.addEventListener('click', function() {
+                currentLocationInput.value = 'Detecting location...';
+                // Simulate location detection
+                setTimeout(() => {
+                    const indianCities = ['Mumbai', 'Delhi', 'Bangalore', 'Chennai', 'Kolkata', 'Hyderabad', 'Pune'];
+                    const randomCity = indianCities[Math.floor(Math.random() * indianCities.length)];
+                    currentLocationInput.value = randomCity;
+                }, 1500);
+            });
+            
+            // Search button
+            searchBtn.addEventListener('click', function() {
+                const currentLocation = currentLocationInput.value.trim();
+                const destination = destinationInput.value.trim();
+                const date = dateInput.value;
+                
+                if (!currentLocation || !destination) {
+                    alert('Please enter both current location and destination');
+                    return;
+                }
+                
+                if (currentLocation.toLowerCase() === destination.toLowerCase()) {
+                    alert('Current location and destination cannot be the same');
+                    return;
+                }
+                
+                // Show loader
+                loader.style.display = 'block';
+                resultsContainer.innerHTML = '';
+                
+                // Simulate API call with Indian transport data
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    displayResults(currentLocation, destination, date);
+                }, 2000);
+            });
+            
+            // Display results function with Indian transport data
+            function displayResults(from, to, date) {
+                // Format date for display
+                const displayDate = new Date(date).toLocaleDateString('en-IN', {
+                    weekday: 'short',
+                    day: 'numeric',
+                    month: 'short'
+                });
+                
+                // Mock data for Indian transport
+                const mockData = {
+                    bus: [
+                        {
+                            company: 'RedBus',
+                            departure: '08:30 PM',
+                            arrival: '06:45 AM',
+                            duration: '10h 15m',
+                            price: '₹1,299',
+                            from: from,
+                            to: to,
+                            type: 'AC Sleeper'
+                        },
+                        {
+                            company: 'TSRTC',
+                            departure: '10:15 PM',
+                            arrival: '08:30 AM',
+                            duration: '10h 15m',
+                            price: '₹899',
+                            from: from,
+                            to: to,
+                            type: 'Non-AC Sleeper'
+                        },
+                        {
+                            company: 'MSRTC',
+                            departure: '11:45 PM',
+                            arrival: '10:00 AM',
+                            duration: '10h 15m',
+                            price: '₹1,099',
+                            from: from,
+                            to: to,
+                            type: 'AC Seater'
+                        }
+                    ],
+                    train: [
+                        {
+                            company: 'Indian Railways',
+                            departure: '09:20 PM',
+                            arrival: '05:40 AM',
+                            duration: '8h 20m',
+                            price: '₹1,499',
+                            from: from,
+                            to: to,
+                            type: 'Rajdhani Express',
+                            number: '12301'
+                        },
+                        {
+                            company: 'Indian Railways',
+                            departure: '12:45 PM',
+                            arrival: '09:05 PM',
+                            duration: '8h 20m',
+                            price: '₹899',
+                            from: from,
+                            to: to,
+                            type: 'Shatabdi Express',
+                            number: '12001'
+                        }
+                    ],
+                    plane: [
+                        {
+                            company: 'IndiGo',
+                            departure: '10:00 AM',
+                            arrival: '12:30 PM',
+                            duration: '2h 30m',
+                            price: '₹4,299',
+                            from: from,
+                            to: to,
+                            type: 'Direct',
+                            number: '6E-2345'
+                        },
+                        {
+                            company: 'Air India',
+                            departure: '02:15 PM',
+                            arrival: '04:45 PM',
+                            duration: '2h 30m',
+                            price: '₹5,199',
+                            from: from,
+                            to: to,
+                            type: 'Direct',
+                            number: 'AI-678'
+                        },
+                        {
+                            company: 'SpiceJet',
+                            departure: '06:30 PM',
+                            arrival: '09:00 PM',
+                            duration: '2h 30m',
+                            price: '₹3,899',
+                            from: from,
+                            to: to,
+                            type: 'Direct',
+                            number: 'SG-4567'
+                        }
+                    ]
+                };
+                
+                // Clear previous results
+                resultsContainer.innerHTML = '';
+                
+                // Show results based on selected transport type
+                if (selectedTransportType === 'all' || selectedTransportType === 'bus') {
+                    mockData.bus.forEach(bus => {
+                        resultsContainer.appendChild(createTransportCard(bus, 'bus', displayDate));
+                    });
+                }
+                
+                if (selectedTransportType === 'all' || selectedTransportType === 'train') {
+                    mockData.train.forEach(train => {
+                        resultsContainer.appendChild(createTransportCard(train, 'train', displayDate));
+                    });
+                }
+                
+                if (selectedTransportType === 'all' || selectedTransportType === 'plane') {
+                    mockData.plane.forEach(plane => {
+                        resultsContainer.appendChild(createTransportCard(plane, 'plane', displayDate));
+                    });
+                }
+                
+                // If no results
+                if (resultsContainer.children.length === 0) {
+                    resultsContainer.innerHTML = `
+                        <div class="no-results">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <h3>No transport options found</h3>
+                            <p>Sorry, we couldn't find any transport options for your search. Try different locations or transport types.</p>
+                        </div>
+                    `;
+                }
+            }
+            
+            // Create transport card
+            function createTransportCard(data, type, date) {
+                const card = document.createElement('div');
+                card.className = 'transport-card';
+                
+                let typeHeader = '';
+                let icon = '';
+                
+                if (type === 'bus') {
+                    typeHeader = 'bus-header';
+                    icon = 'bus';
+                } else if (type === 'train') {
+                    typeHeader = 'train-header';
+                    icon = 'train';
+                } else if (type === 'plane') {
+                    typeHeader = 'plane-header';
+                    icon = 'plane';
+                }
+                
+                card.innerHTML = `
+                    <div class="card-header ${typeHeader}">
+                        <h3>${data.company}</h3>
+                        <span><i class="fas fa-${icon}"></i></span>
+                    </div>
+                    <div class="card-body">
+                        <div class="route">
+                            <span>${data.from}</span>
+                            <span>→</span>
+                            <span>${data.to}</span>
+                        </div>
+                        <div class="timing">
+                            <span>Departure</span>
+                            <span>${data.departure} | ${date}</span>
+                        </div>
+                        <div class="timing">
+                            <span>Arrival</span>
+                            <span>${data.arrival}</span>
+                        </div>
+                        <div class="timing">
+                            <span>Duration</span>
+                            <span>${data.duration}</span>
+                        </div>
+                        ${data.number ? `<div class="timing">
+                            <span>${type === 'train' ? 'Train No.' : 'Flight No.'}</span>
+                            <span>${data.number}</span>
+                        </div>` : ''}
+                        ${data.type ? `<div class="timing">
+                            <span>Type</span>
+                            <span>${data.type}</span>
+                        </div>` : ''}
+                        <div class="price">
+                            ${data.price}
+                        </div>
+                    </div>
+                `;
+                
+                return card;
+            }
+        });
+    </script>
+</body>
+</html>

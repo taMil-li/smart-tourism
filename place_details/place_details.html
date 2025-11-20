@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SMART TOURISM</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css"
+    />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+      :root {
+        --bg: #88c4f8da;
+        --card: #ffffff;
+        --muted: #808698;
+        --accent: #79c0ff;
+        --ok: #89f0a2;
+        --warn: #fab106;
+        --bad: #ff8a8a;
+        --text: #2c3648;
+        --border: rgba(255, 255, 255, 0.08);
+      }
+      body {
+        margin: 0;
+        font-family: system-ui;
+        background: var(--bg);
+        color: var(--text);
+      }
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        justify-content: space-between;
+        padding: 16px;
+        background: rgba(11, 18, 32, 0.8);
+        border-bottom: 1px solid var(--border);
+      }
+      .brand {
+        margin: 0;
+        font-weight: 700;
+        font-size: 25px !important;
+        letter-spacing: 0.2px;
+        color: #fff;
+        text-shadow: -0.5px -0.5px 0 #3700ff, 0.5px -0.5px 0 #3700ff,
+          0.5px 0.5px 0 #3700ff, -0.5px 0.5px 0 #3700ff;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      .actions {
+        display: flex;
+        gap: 10px;
+      }
+      .btn {
+        background: var(--card);
+        color: #fff;
+        border: 1px solid var(--border);
+        padding: 8px 12px;
+        border-radius: 10px;
+        cursor: pointer;
+      }
+      .btn.primary {
+        background: #3700ff;
+      }
+      .btn.sos {
+        background: #ff8a8a;
+        color: #000;
+      }
+      .wrap {
+        max-width: 1200px;
+        margin: 14px auto;
+        padding: 0 16px;
+      }
+      .toolbar {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        padding: 12px;
+        background: var(--card);
+        border-radius: 14px;
+        margin-bottom: 12px;
+      }
+      .input {
+        flex: 1;
+        min-width: 220px;
+        background: #fff;
+        border: 1px solid var(--border);
+        color: var(--text);
+        padding: 10px;
+        border-radius: 10px;
+      }
+      #map {
+        height: 60vh;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        margin-bottom: 12px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 12px;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 10px;
+        max-height: 200px;
+        overflow: auto;
+      }
+      .card h4 {
+        margin: 0 0 8px;
+        font-size: 15px;
+      }
+      ul {
+        margin: 0;
+        padding-left: 16px;
+      }
+      li {
+        margin: 3px 0;
+      }
+      #wikiInfo,
+      #weather {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 10px;
+        margin-top: 12px;
+      }
+      .leaflet-routing-container {
+        background: #121a2b !important;
+        color: #fff !important;
+        border-radius: 10px;
+        max-height: 250px;
+        overflow: auto;
+      }
+      .leaflet-routing-container a {
+        color: #79c0ff !important;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="brand">SMART TOURISM</div>
+      <div class="actions">
+        <button id="downloadBtn" class="btn primary">⬇️ Report</button>
+        <button id="complaintBtn" class="btn primary">
+          📝 Online Complaint
+        </button>
+      </div>
+    </header>
+
+    <div class="wrap">
+      <div class="toolbar">
+        <input
+          id="startInput"
+          class="input"
+          placeholder="Enter start or leave empty for current"
+        />
+        <input
+          id="destinationInput"
+          class="input"
+          placeholder="Enter destination"
+        />
+        <button id="routeBtn" class="btn primary">Show Route</button>
+      </div>
+
+      <div id="map"></div>
+
+      <div class="grid">
+        <div class="card" id="startHotelList">
+          <h4>Start Nearby Hotels</h4>
+          <ul></ul>
+        </div>
+        <div class="card" id="destHotelList">
+          <h4>Destination Nearby Hotels</h4>
+          <ul></ul>
+        </div>
+        <div class="card" id="startHospitalList">
+          <h4>Start Nearby Hospitals</h4>
+          <ul></ul>
+        </div>
+        <div class="card" id="startPoliceList">
+          <h4>Start Nearby Police</h4>
+          <ul></ul>
+        </div>
+        <div class="card" id="startFireList">
+          <h4>Start Nearby Fire Stations</h4>
+          <ul></ul>
+        </div>
+        <div class="card" id="startCrimeList">
+          <h4>Start Nearby Crimes</h4>
+          <ul></ul>
+        </div>
+        <div class="card" id="destHospitalList">
+          <h4>Destination Nearby Hospitals</h4>
+          <ul></ul>
+        </div>
+        <div class="card" id="destPoliceList">
+          <h4>Destination Nearby Police</h4>
+          <ul></ul>
+        </div>
+        <div class="card" id="destFireList">
+          <h4>Destination Nearby Fire Stations</h4>
+          <ul></ul>
+        </div>
+        <div class="card" id="destCrimeList">
+          <h4>Destination Nearby Crimes</h4>
+          <ul></ul>
+        </div>
+      </div>
+
+      <div id="wikiInfo">
+        <b>Destination Wikipedia Info:</b><br />Loading...
+      </div>
+      <div id="weather"><b>3-Day Weather Forecast:</b><br />Loading...</div>
+    </div>
+
+    <script>
+      // Online Complaint button opens info/redirect page
+      document.getElementById("complaintBtn").addEventListener("click", () => {
+        window.open("complaint_info.html", "_blank");
+      });
+      let map = L.map("map").setView([13.0827, 80.2707], 13);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+      }).addTo(map);
+      let routingControl;
+
+      // Custom icons
+      const icons = {
+        hospital: L.icon({
+          iconUrl: "https://cdn-icons-png.flaticon.com/512/2966/2966327.png",
+          iconSize: [24, 24],
+        }),
+        police: L.icon({
+          iconUrl: "https://cdn-icons-png.flaticon.com/512/190/190411.png",
+          iconSize: [24, 24],
+        }),
+        fire: L.icon({
+          iconUrl: "https://cdn-icons-png.flaticon.com/512/482/482059.png",
+          iconSize: [24, 24],
+        }),
+        hotel: L.icon({
+          iconUrl: "https://cdn-icons-png.flaticon.com/512/139/139899.png",
+          iconSize: [24, 24],
+        }),
+        crime: L.icon({
+          iconUrl: "https://cdn-icons-png.flaticon.com/512/564/564619.png",
+          iconSize: [24, 24],
+        }),
+      };
+
+      function getDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371;
+        const dLat = ((lat2 - lat1) * Math.PI) / 180;
+        const dLon = ((lon2 - lon1) * Math.PI) / 180;
+        const a =
+          Math.sin(dLat / 2) ** 2 +
+          Math.cos((lat1 * Math.PI) / 180) *
+            Math.cos((lat2 * Math.PI) / 180) *
+            Math.sin(dLon / 2) ** 2;
+        return (
+          R *
+          2 *
+          Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)) *
+          1000
+        ).toFixed(0);
+      }
+
+      // Fetch POIs
+      async function fetchPOIs(lat, lon) {
+        const q = `[out:json];(node["amenity"="hospital"](around:4000,${lat},${lon});node["amenity"="police"](around:4000,${lat},${lon});node["amenity"="fire_station"](around:4000,${lat},${lon}););out;`;
+        const r = await fetch("https://overpass-api.de/api/interpreter", {
+          method: "POST",
+          body: "data=" + encodeURIComponent(q),
+        });
+        const d = await r.json();
+        return d.elements.map((el) => ({
+          name: el.tags.name || "Unnamed",
+          type: el.tags.amenity,
+          lat: el.lat,
+          lon: el.lon,
+          distance: getDistance(lat, lon, el.lat, el.lon),
+        }));
+      }
+      async function fetchHotels(lat, lon) {
+        const q = `[out:json];node["tourism"="hotel"](around:4000,${lat},${lon});out;`;
+        const r = await fetch("https://overpass-api.de/api/interpreter", {
+          method: "POST",
+          body: "data=" + encodeURIComponent(q),
+        });
+        const d = await r.json();
+        return d.elements.map((el) => ({
+          name: el.tags.name || "Unnamed Hotel",
+          lat: el.lat,
+          lon: el.lon,
+          distance: getDistance(lat, lon, el.lat, el.lon),
+        }));
+      }
+      function fetchNearbyCrimes(lat, lon) {
+        return [
+          {
+            type: "Robbery",
+            desc: "Reported",
+            lat: lat + 0.01,
+            lon: lon + 0.01,
+          },
+          {
+            type: "Assault",
+            desc: "Reported",
+            lat: lat - 0.008,
+            lon: lon + 0.004,
+          },
+        ];
+      }
+
+      function updateList(prefix, type, items) {
+        const box = document.getElementById(prefix + type + "List");
+        if (box) {
+          const ul = box.querySelector("ul");
+          ul.innerHTML = "";
+          items.forEach((it) => {
+            const li = document.createElement("li");
+            // If item contains an <a> tag, use innerHTML
+            if (it.includes("<a")) li.innerHTML = it;
+            else li.textContent = it;
+            ul.appendChild(li);
+          });
+        }
+      }
+
+      function renderMarkers(pois, hotels, crimes, prefix) {
+        let hospitals = [],
+          police = [],
+          fires = [];
+        pois.forEach((p) => {
+          if (p.type === "hospital") {
+            hospitals.push(`${p.name} - ${p.distance}m`);
+            L.marker([p.lat, p.lon], { icon: icons.hospital }).addTo(map);
+          }
+          if (p.type === "police") {
+            police.push(`${p.name} - ${p.distance}m`);
+            L.marker([p.lat, p.lon], { icon: icons.police }).addTo(map);
+          }
+          if (p.type === "fire_station") {
+            fires.push(`${p.name} - ${p.distance}m`);
+            L.marker([p.lat, p.lon], { icon: icons.fire }).addTo(map);
+          }
+        });
+        updateList(prefix, "Hospital", hospitals);
+        updateList(prefix, "Police", police);
+        updateList(prefix, "Fire", fires);
+
+        let hotelsList = [];
+        hotels.forEach((h) => {
+          // Make hotel name clickable
+          const hotelLink = `<a href="hotel_review.html?name=${encodeURIComponent(
+            h.name
+          )}" target="_blank" style="color:#79c0ff;text-decoration:underline;">${
+            h.name
+          }</a> - ${h.distance}m`;
+          hotelsList.push(hotelLink);
+          L.marker([h.lat, h.lon], { icon: icons.hotel }).addTo(map);
+        });
+        updateList(prefix, "Hotel", hotelsList);
+
+        let crimesList = [];
+        crimes.forEach((c) => {
+          crimesList.push(`${c.type}: ${c.desc}`);
+          L.marker([c.lat, c.lon], { icon: icons.crime }).addTo(map);
+        });
+        updateList(prefix, "Crime", crimesList);
+      }
+
+      document
+        .getElementById("routeBtn")
+        .addEventListener("click", async () => {
+          let start = document.getElementById("startInput").value,
+            dest = document.getElementById("destinationInput").value;
+          if (!dest) return Swal.fire("Enter destination!");
+          let startLat, startLon;
+          if (!start) {
+            await new Promise((res) =>
+              navigator.geolocation.getCurrentPosition((p) => {
+                startLat = p.coords.latitude;
+                startLon = p.coords.longitude;
+                res();
+              })
+            );
+          } else {
+            const r = await fetch(
+              `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+                start
+              )}`
+            );
+            const d = await r.json();
+            startLat = parseFloat(d[0].lat);
+            startLon = parseFloat(d[0].lon);
+          }
+          const rd = await fetch(
+            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+              dest
+            )}`
+          );
+          const dd = await rd.json();
+          const destLat = parseFloat(dd[0].lat),
+            destLon = parseFloat(dd[0].lon);
+          if (routingControl) map.removeControl(routingControl);
+          routingControl = L.Routing.control({
+            waypoints: [
+              L.latLng(startLat, startLon),
+              L.latLng(destLat, destLon),
+            ],
+            lineOptions: { styles: [{ color: "#0d00ff", weight: 6 }] },
+            show: true,
+            routeWhileDragging: true,
+            createMarker: (i, wp) =>
+              L.circleMarker(wp.latLng, {
+                radius: 10,
+                color: "#0d00ff",
+                fillColor: "#0d00ff",
+                fillOpacity: 1,
+              }),
+          }).addTo(map);
+
+          const sPois = await fetchPOIs(startLat, startLon),
+            sHotels = await fetchHotels(startLat, startLon),
+            sCrimes = fetchNearbyCrimes(startLat, startLon);
+          renderMarkers(sPois, sHotels, sCrimes, "start");
+          const dPois = await fetchPOIs(destLat, destLon),
+            dHotels = await fetchHotels(destLat, destLon),
+            dCrimes = fetchNearbyCrimes(destLat, destLon);
+          renderMarkers(dPois, dHotels, dCrimes, "dest");
+
+          try {
+            const w = await fetch(
+              `https://api.open-meteo.com/v1/forecast?latitude=${destLat}&longitude=${destLon}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=auto`
+            );
+            const wd = await w.json();
+            let f = "";
+            for (let i = 0; i < 3; i++) {
+              f += `${wd.daily.time[i]}: ${wd.daily.temperature_2m_min[i]}°C - ${wd.daily.temperature_2m_max[i]}°C, 🌧 ${wd.daily.precipitation_sum[i]}mm<br>`;
+            }
+            document.getElementById("weather").innerHTML =
+              "<b>3-Day Weather Forecast:</b><br>" + f;
+          } catch {}
+          try {
+            const wr = await fetch(
+              `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(
+                dest
+              )}`
+            );
+            const wd = await wr.json();
+            document.getElementById("wikiInfo").innerHTML =
+              "<b>Destination Wikipedia Info:</b><br>" +
+              (wd.extract || "Not found");
+          } catch {}
+        });
+
+      // Download report button generates and downloads a PDF of the visible page
+      document
+        .getElementById("downloadBtn")
+        .addEventListener("click", async () => {
+          const { jsPDF } = window.jspdf;
+          const main = document.body;
+          // Hide the download and SOS buttons for the PDF
+          const downloadBtn = document.getElementById("downloadBtn");
+          const sosBtn = document.getElementById("sosBtn");
+          downloadBtn.style.display = "none";
+          if (sosBtn) sosBtn.style.display = "none";
+          await html2canvas(main, { useCORS: true, scale: 2 }).then(
+            (canvas) => {
+              const imgData = canvas.toDataURL("image/png");
+              const pdf = new jsPDF({
+                orientation: "portrait",
+                unit: "px",
+                format: [canvas.width, canvas.height],
+              });
+              pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
+              pdf.save("TouristGuard_Report.pdf");
+            }
+          );
+          downloadBtn.style.display = "";
+          if (sosBtn) sosBtn.style.display = "";
+        });
+    </script>
+  </body>
+</html>

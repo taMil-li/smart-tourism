@@ -1,0 +1,216 @@
+:root {
+  --bg: #88c4f8da;
+  --card: #ffffff;
+  --muted: #808698;
+  --accent: #79c0ff;
+  --ok: #89f0a2;
+  --warn: #fab106;
+  --bad: #ff8a8a;
+}
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue",
+    Arial, "Noto Sans";
+  background: var(--bg);
+  color: #2c3648;
+}
+header, .navbar {
+  padding: 18px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  color: #fff;
+  position: sticky;
+  top: 0;
+  backdrop-filter: blur(6px);
+  background: rgba(211, 222, 245, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.navbar-nav {
+  margin-left: auto !important;
+}
+
+.nav-item {
+  margin-left: 5px;
+}
+
+#websiteLogo {
+  margin: 0;
+  font-weight: 700;
+  font-size: 25px;
+  letter-spacing: 0.2px;
+  color: #018ff4;
+  text-shadow: 
+    -0.5px -0.5px 0 #3700ff,
+    0.5px -0.5px 0 #3700ff,
+    0.5px 0.5px 0 #3700ff,
+    -0.5px 0.5px 0 #3700ff;
+}
+.website-logo{
+  font-family: Arial, Helvetica, sans-serif;
+}
+main {
+  max-width: 1100px;
+  margin: 16px auto 80px;
+  padding: 0 16px;
+}
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 14px 0 8px;
+}
+button {
+  background: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #000000;
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 0 4px blue;
+}
+button:hover {
+  border-color: rgba(121, 192, 255, 0.6);
+  box-shadow: 0 0 4px rgba(121, 192, 255, 0.3);
+}
+.sign {
+  background: #3700ff;
+  color: white;
+  font-size: 15px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+}
+.card {
+  background: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 14px;
+}
+.card h2 {
+  margin: 0 0 8px;
+  font-size: 16px;
+  color: #018ff4;
+  letter-spacing: 0.2px;
+}
+.meta {
+  color: var(--muted);
+  font-size: 13px;
+}
+ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+li {
+  margin: 4px 0;
+}
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+.pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  margin-left: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+.ok {
+  color: var(--ok);
+}
+.warn {
+  color: var(--warn);
+}
+.bad {
+  color: var(--bad);
+}
+.row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono",
+    monospace;
+}
+.small {
+  font-size: 12px;
+  color: var(--muted);
+}
+.sp {
+  height: 8px;
+}
+.error {
+  color: var(--bad);
+}
+.muted {
+  color: var(--muted);
+}
+.kpi {
+  font-size: 22px;
+  font-weight: 700;
+}
+.list-two-col {
+  column-count: 2;
+  column-gap: 18px;
+}
+@media (max-width: 560px) {
+  .list-two-col {
+    column-count: 1;
+  }
+  
+  .hide {
+    display: none !important;
+  }
+}
+footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  padding: 24px 0 40px;
+}
+
+/* map container */
+#mapwrap {
+  margin: 14px auto;
+  max-width: 1100px;
+  padding: 0 16px 0;
+}
+#map {
+  height: 66vh;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+/* mini label style next to crime dot */
+.crime-mini {
+  font-size: 10px;
+  color: #fff;
+  opacity: 0.9;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 2px 6px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+/* small table fallback */
+table.crime-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #e9f1ff;
+}
+table.crime-table th,
+table.crime-table td {
+  padding: 6px 8px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.04);
+  text-align: left;
+  font-size: 13px;
+}

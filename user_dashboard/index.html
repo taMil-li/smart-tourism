@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title data-i18n="app.title">SMART T🌍URISM</title>
+
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Bootstrap (single CSS + bundle JS loaded at the end of body) -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+
+    <!-- Leaflet + plugins (CDN, free) -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      crossorigin=""
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
+    />
+  </head>
+  <body>
+    <header>
+      <nav class="navbar navbar-expand-lg bg-body-tertiary w-100">
+        <div class="container-fluid">
+          <h1 class="website-logo" id="websiteLogo" data-i18n="app.title">
+            SMART T🌍URISM
+          </h1>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+            onclick="toggleMenu()"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <select
+                  id="langSelect"
+                  aria-label="Language"
+                  style="
+                    background: var(--card);
+                    border: 1px solid rgba(255, 255, 255, 0.12);
+                    padding: 6px 8px;
+                    border-radius: 8px;
+                  "
+                >
+                  <option value="en">EN</option>
+                  <option value="hi">हिं</option>
+                  <option value="ta">தமி</option>
+                </select>
+              </li>
+              <li class="nav-item">
+                <button
+                  class="ai-assistant btn text"
+                  target="_blank"
+                  id="tourBuddy"
+                >
+                  🤖 TourBuddy AI
+                </button>
+              </li>
+              <li class="nav-item">
+                <button class="sos btn" id="sosBtn" data-i18n="app.actions.sos">
+                  🚨 SOS
+                </button>
+              </li>
+              <li class="nav-item">
+                <button
+                  id="getPlaceDetailsBtn"
+                  data-i18n="app.actions.tourDetails"
+                  style="
+                    margin: 10px 0;
+                    width: 90%;
+                    padding: 10px;
+                    border-radius: 8px;
+                    background: var(--accent);
+                    color: #222;
+                    font-weight: bold;
+                    border: none;
+                  "
+                >
+                  Get Offline Map
+                </button>
+              </li>
+              <li class="nav-item">
+                <button
+                  id="travelDetailsBtn"
+                  data-i18n="app.actions.tourDetails"
+                  style="
+                    margin: 10px 0;
+                    width: 90%;
+                    padding: 10px;
+                    border-radius: 8px;
+                    background: var(--accent);
+                    color: #222;
+                    font-weight: bold;
+                    border: none;
+                  "
+                >
+                  Travel Details
+                </button>
+              </li>
+              <li class="nav-item">
+                <button
+                  id="fairPriceBtn"
+                  data-i18n="app.actions.tourDetails"
+                  style="
+                    margin: 10px 0;
+                    width: 90%;
+                    padding: 10px;
+                    border-radius: 8px;
+                    background: var(--accent);
+                    color: #222;
+                    font-weight: bold;
+                    border: none;
+                  "
+                >
+                  Fair Price
+                </button>
+              </li>
+            </ul>
+          </div>
+          <div class="dropdown profile-dropdown">
+            <button
+              class="btn dropdown-toggle"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <img
+                src="profile-icon.png"
+                alt="Profile"
+                id="profileIcon"
+                class="profile-icon"
+              />
+            </button>
+            <ul class="dropdown-menu profile-menu">
+              <li>
+                <a
+                  href=""
+                  class="dropdown-item option"
+                  id="logoutBtn"
+                  data-i18n="app.actions.logout"
+                  >Logout</a
+                >
+              </li>
+              <li>
+                <a
+                  href=""
+                  class="dropdown-item option"
+                  id="signOutBtn"
+                  data-i18n="app.actions.signout"
+                  >Sign Out</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      <!-- <div style="display: flex; gap: 12px; align-items: center">
+        <h1 class="website-logo" data-i18n="app.title">
+          <a href="" class="text">T🌍uristGuard</a>
+        </h1>
+        <div class="small muted mono" id="coords">Lat —, Lon —</div>
+      </div>
+
+      <div class="actions" style="align-items: center">
+        <img
+          src="crowd-img.jpg"
+          id="crowdDetector"
+          class="crowd-img profile-icon"
+        />
+        <button class="ai-assistant btn">
+          <a
+            href="https://gemini.google.com/gem/3fefb449bf58"
+            target="_blank"
+            class="text"
+            >🤖 TourBuddy AI</a
+          >
+        </button>
+        <select
+          id="langSelect"
+          style="
+            background: var(--card);
+            color: #e9f1ff;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 6px 8px;
+            border-radius: 8px;
+          "
+        >
+          <option value="en">EN</option>
+          <option value="hi">हिं</option>
+          <option value="ta">தமி</option>
+        </select>
+        <button
+          id="btnRefresh"
+          title="Refresh data for last-known location"
+          data-i18n="app.actions.refresh"
+          class="btn"
+        >
+          🔁 Refresh
+        </button>
+        <button class="sos btn" id="sosBtn" data-i18n="app.actions.sos">
+          🚨 SOS
+        </button>
+        <button
+          id="tourDetails"
+          class="tour-details btn"
+          data-i18n="app.actions.tourDetails"
+        >
+          Get Tour Place Details
+        </button>
+        <button
+          class="Transport btn"
+          id="transportBtn"
+          data-i18n="app.actions.transport"
+        >
+          Transport
+        </button>
+        <div
+          id="transportPopup"
+          style="
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--card);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.4);
+            z-index: 3000;
+            min-width: 260px;
+            padding: 24px 18px;
+            text-align: center;
+          "
+        >
+          <h3 style="margin-top: 0; color: var(--accent)">Transport Options</h3>
+          <button
+            id="travelDetailsBtn"
+            style="
+              margin: 10px 0;
+              width: 90%;
+              padding: 10px;
+              border-radius: 8px;
+              background: var(--accent);
+              color: #222;
+              font-weight: bold;
+              border: none;
+            "
+          >
+            Travel Details</button
+          ><br />
+          <button
+            id="fairPriceBtn"
+            style="
+              margin: 10px 0;
+              width: 90%;
+              padding: 10px;
+              border-radius: 8px;
+              background: var(--accent);
+              color: #222;
+              font-weight: bold;
+              border: none;
+            "
+          >
+            Fair Price Details</button
+          ><br />
+          <button
+            id="closeTransportPopup"
+            style="
+              margin-top: 16px;
+              padding: 8px 18px;
+              border-radius: 8px;
+              background: #ff8a8a;
+              color: #222;
+              font-weight: bold;
+              border: none;
+            "
+          >
+            Close
+          </button>
+        </div>
+        <div class="profile-dropdown">
+                  <img
+                    src="profile-icon.png"
+                    alt="Profile"
+                    id="profileIcon"
+                    class="profile-icon"
+                  />
+                  <div class="profile-menu" id="profilePopup">
+                    <a
+                      href=""
+                      class="option"
+                      id="logoutBtn"
+                      data-i18n="app.actions.logout"
+                      >Logout</a
+                    >
+                    <a
+                      href=""
+                      class="option"
+                      id="signOutBtn"
+                      data-i18n="app.actions.signout"
+                      >Sign Out</a
+                    >
+                  </div>
+                </div>
+              </div> -->
+    </header>
+    <div
+      id="tourDetailsPopup"
+      style="
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: var(--card);
+        border: 1px solid var(--accent);
+        border-radius: 12px;
+        box-shadow: 0 6px 30px rgba(0, 0, 0, 0.4);
+        z-index: 3000;
+        min-width: 260px;
+        padding: 24px 18px;
+        text-align: center;
+      "
+    >
+      <h3 style="margin-top: 0; color: var(--accent)">Tour Place Options</h3>
+      <button
+        id="getPlaceDetailsBtn"
+        style="
+          margin: 10px 0;
+          width: 90%;
+          padding: 10px;
+          border-radius: 8px;
+          background: var(--accent);
+          color: #222;
+          font-weight: bold;
+          border: none;
+        "
+      >
+        Get place details</button
+      ><br />
+      <button
+        id="getMeasuresBtn"
+        style="
+          margin: 10px 0;
+          width: 90%;
+          padding: 10px;
+          border-radius: 8px;
+          background: var(--accent);
+          color: #222;
+          font-weight: bold;
+          border: none;
+        "
+      >
+        Get measures and concerns</button
+      ><br />
+      <button
+        id="closeTourDetailsPopup"
+        style="
+          margin-top: 16px;
+          padding: 8px 18px;
+          border-radius: 8px;
+          background: #ff8a8a;
+          color: #222;
+          font-weight: bold;
+          border: none;
+        "
+      >
+        Close
+      </button>
+    </div>
+
+    <!-- MAP first, then the rest of UI (keeps design/layout) -->
+    <div id="mapwrap">
+      <div id="map"></div>
+    </div>
+
+    <main>
+      <div class="grid">
+        <section class="card" id="cardAddress">
+          <h2>
+            🏠 Address <span id="addrStatus" class="pill muted">idle</span>
+          </h2>
+          <div id="address">—</div>
+          <div id="admin" class="small muted"></div>
+        </section>
+
+        <section class="card" id="cardRecentCrimes">
+          <h2>
+            🔎 Recent nearby crimes (10 km)
+            <span id="crimeStatus" class="pill muted">idle</span>
+          </h2>
+          <div id="crimeContent">
+            <div class="small muted">No data yet.</div>
+          </div>
+          <div
+            class="small muted"
+            style="margin-top: 8px; color: rgb(250, 250, 131)"
+          >
+            ⚠︎ These info are not to make you afraid, these are for making you
+            aware.
+          </div>
+        </section>
+
+        <section class="card" id="cardWeather">
+          <h2>🌦️ Weather <span id="wxStatus" class="pill muted">idle</span></h2>
+          <div class="row">
+            <div>Temp: <span id="temp" class="kpi">—</span>°C</div>
+            <div>Wind: <span id="wind" class="kpi">—</span> km/h</div>
+          </div>
+          <div class="small muted">
+            Weather: <span id="wcode">—</span> • Time: <span id="wtime">—</span>
+          </div>
+        </section>
+
+        <section class="card tourist-section">
+          <h2>🌍 Nearby Tourist Places</h2>
+          <button id="loadTouristBtn">Find Tourist Places</button>
+          <ul id="touristResults" class="list-two-col"></ul>
+        </section>
+
+        <section class="card" id="cardPolice">
+          <h2>
+            🚓 Nearby Police <span id="polStatus" class="pill muted">idle</span>
+          </h2>
+          <ul id="policeList" class="list-two-col"></ul>
+        </section>
+
+        <section class="card" id="cardHosp">
+          <h2>
+            🏥 Hospitals <span id="hospStatus" class="pill muted">idle</span>
+          </h2>
+          <ul id="hospList" class="list-two-col"></ul>
+        </section>
+
+        <section class="card" id="cardFire">
+          <h2>
+            🚒 Fire Stations
+            <span id="fireStatus" class="pill muted">idle</span>
+          </h2>
+          <ul id="fireList" class="list-two-col"></ul>
+        </section>
+
+        <section class="card" id="cardRestricted">
+          <h2>
+            🪖 Restricted / Military
+            <span id="milStatus" class="pill muted">idle</span>
+          </h2>
+          <ul id="milList" class="list-two-col"></ul>
+        </section>
+
+        <section class="card" id="cardGDACS">
+          <h2>
+            ⚠️ Disaster Alerts (GDACS)
+            <span id="gdacsStatus" class="pill muted">idle</span>
+          </h2>
+          <ul id="gdacsList"></ul>
+        </section>
+
+        <section class="card" id="cardRelief">
+          <h2>
+            📰 Security / Terrorism Reports (ReliefWeb)
+            <span id="reliefStatus" class="pill muted">idle</span>
+          </h2>
+          <ul id="reliefList"></ul>
+        </section>
+      </div>
+    </main>
+
+    <footer>&copy Copyright 2025 • All Rights are reserved</footer>
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      crossorigin=""
+    ></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+    <script src="../public/js/i18n.js"></script>
+
+    <!-- Sign Out Modal -->
+    <div
+      id="signoutModal"
+      style="
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 2000;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <div
+        style="
+          background: var(--card);
+          color: #e9f1ff;
+          width: 92%;
+          max-width: 520px;
+          border-radius: 12px;
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          box-shadow: 0 6px 30px rgba(0, 0, 0, 0.4);
+        "
+      >
+        <div
+          style="
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+          "
+        >
+          <div
+            style="font-weight: 700; color: #0f1524"
+            data-i18n="dashboard.modal.signoutTitle"
+          >
+            Sign Out (Deactivate Account)
+          </div>
+          <button
+            id="signoutClose"
+            style="
+              background: transparent;
+              border: none;
+              color: #e9f1ff;
+              font-size: 18px;
+              cursor: pointer;
+            "
+          >
+            ✕
+          </button>
+        </div>
+        <form id="signoutForm" style="padding: 16px">
+          <div class="small muted" style="margin-bottom: 12px">
+            Confirm your details to sign out (deactivate). You can re-activate
+            by contacting support or signing up again.
+          </div>
+          <label
+            for="so_user_hash"
+            style="display: block; margin: 8px 0 6px; font-size: 14px"
+            data-i18n="dashboard.modal.userHash"
+            >User Data Hash</label
+          >
+          <input
+            id="so_user_hash"
+            name="user_data_hash"
+            type="text"
+            readonly
+            style="
+              width: 100%;
+              padding: 10px;
+              border-radius: 8px;
+              border: 1px solid rgba(255, 255, 255, 0.12);
+              background: #0f1524;
+              color: #e9f1ff;
+            "
+          />
+
+          <label
+            for="so_gov_sig"
+            style="display: block; margin: 12px 0 6px; font-size: 14px"
+            data-i18n="dashboard.modal.govSig"
+            >Govt Key</label
+          >
+          <input
+            id="so_gov_sig"
+            name="govt_signout_signature"
+            type="text"
+            placeholder="Enter government signout signature"
+            required
+            style="
+              width: 100%;
+              padding: 10px;
+              border-radius: 8px;
+              border: 1px solid rgba(255, 255, 255, 0.12);
+              background: #0f1524;
+              color: #e9f1ff;
+            "
+          />
+
+          <div
+            style="
+              display: flex;
+              gap: 10px;
+              justify-content: flex-end;
+              margin-top: 16px;
+            "
+          >
+            <button
+              type="button"
+              id="signoutCancel"
+              data-i18n="dashboard.modal.cancel"
+              style="
+                background: #353c4e;
+                border: 1px solid rgba(255, 255, 255, 0.18);
+                color: #fff;
+                padding: 10px 14px;
+                border-radius: 10px;
+                cursor: pointer;
+              "
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              id="signoutSubmit"
+              class="sign"
+              data-i18n="dashboard.modal.submit"
+              style="
+                padding: 10px 16px;
+                border: none;
+                border-radius: 10px;
+                cursor: pointer;
+              "
+            >
+              Sign Out
+            </button>
+          </div>
+          <div id="signoutMsg" class="small" style="margin-top: 10px"></div>
+        </form>
+      </div>
+    </div>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+      crossorigin="anonymous"
+    ></script>
+
+    <script src="script.js"></script>
+  </body>
+</html>
