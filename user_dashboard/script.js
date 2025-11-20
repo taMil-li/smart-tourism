@@ -132,7 +132,7 @@ async function checkAuthentication() {
     return false;
   }
   try {
-    const res = await fetch("http://localhost:3000/api/verify-token", {
+    const res = await fetch("https://smart-tourism-backend-2.onrender.com/api/verify-token", {
       method: "GET",
       headers: { authorization: jwt },
     });
@@ -319,7 +319,7 @@ function setupEventListeners() {
         e.preventDefault();
         const jwt = getCookie("jwt");
         if (jwt) {
-          fetch("http://localhost:3000/api/logout", {
+          fetch("https://smart-tourism-backend-2.onrender.com/api/logout", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -383,7 +383,7 @@ function setupEventListeners() {
           return;
         }
         try {
-          const r = await fetch("http://localhost:3000/api/signout", {
+          const r = await fetch("https://smart-tourism-backend-2.onrender.com/api/signout", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -484,7 +484,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 document.getElementById('tourBuddy').addEventListener('click', async () => {
-  const fetched = await fetch('http://localhost:3000/api/tourbuddy-url')
+  const fetched = await fetch('https://smart-tourism-backend-2.onrender.com/api/tourbuddy-url')
   const data = await fetched.json();
   console.log(data);
   if(data) {

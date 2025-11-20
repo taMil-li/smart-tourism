@@ -165,7 +165,7 @@ function getCookie(name) {
 (async () => {
   const jwt = getCookie('jwt');
   if (jwt) {
-    const res = await fetch('http://localhost:3000/api/verify-token', {
+    const res = await fetch('https://smart-tourism-backend-2.onrender.com/api/verify-token', {
       method: 'GET',
       headers: { 'authorization': jwt }
     });
@@ -192,7 +192,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     user_private_key: document.getElementById('user_private_key').value.trim()
   };
   try {
-    const res = await fetch('http://localhost:3000/api/login', {
+    const res = await fetch('https://smart-tourism-backend-2.onrender.com/api/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)

@@ -11,7 +11,7 @@ function signOutUser() {
     window.location.href = '../authenticate/login.html';
     return;
   }
-  fetch('http://localhost:3000/api/signout', {
+  fetch('https://smart-tourism-backend-2.onrender.com/api/signout', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
