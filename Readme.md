@@ -1,10 +1,10 @@
-🌍 Smart Tourism
+ThereYouG🌍
 
 A lightweight, multilingual, map-based web application that helps tourists discover nearby attractions, view safety services, get fair price estimates, check weather, plan routes, and receive personalized recommendations based on their interests.
 
 🚀 Overview
 
-Smart Tourism provides an all-in-one digital toolkit for travelers — bringing together local discovery, safety information, route planning, fair prices, weather, multilingual UI, and an AI-powered recommendation system.
+ThereYouGo provides an all-in-one digital toolkit for travelers — bringing together local discovery, safety information, route planning, fair prices, weather, multilingual UI, and an AI-powered recommendation system.
 It works smoothly on modern browsers, supports offline elements (cached tiles, PDF export), and integrates multiple free public APIs.
 
 🎯 Key Features
@@ -259,4 +259,6 @@ MIT License
 
 💬 Customer Support Chatbot
 
-Smart Tourism includes an optional AI-powered support assistant to help tourists understand features, routes, recommendations, and safety information.
+ThereYouGo includes an optional AI-powered support assistant to help tourists understand features, routes, recommendations, and safety information.
+
+There YOU go...!!!
