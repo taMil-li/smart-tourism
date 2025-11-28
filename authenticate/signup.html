@@ -1,197 +1,249 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Tourist Safety - Sign Up</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e') no-repeat center center fixed;
-      background-size: cover;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-
-    .container {
-      background: rgba(255, 255, 255, 0.9);
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.3);
-      width: 350px;
-      max-width: 95vw;
-      text-align: center;
-      animation: fadeIn .5s ease-in-out;
-    }
-
-    @media (min-width: 900px) {
-      .container {
-        width: 700px;
-      }
-      #signupForm {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px 30px;
-        text-align: left;
-      }
-      #signupForm label, #signupForm input {
-        width: 100%;
+  <head>
+    <meta charset="UTF-8" />
+    <title>Tourist Safety - Sign Up</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e")
+          no-repeat center center fixed;
+        background-size: cover;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
         margin: 0;
       }
-      #signupForm button {
-        grid-column: span 2;
-        width: 100%;
-      }
-      #message {
-        grid-column: span 2;
-      }
-    }
 
-    @media (max-width: 600px) {
       .container {
-        width: 98vw;
-        padding: 10px;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.3);
+        width: 350px;
+        max-width: 95vw;
+        text-align: center;
+        animation: fadeIn 0.5s ease-in-out;
       }
-      #signupForm label, #signupForm input, #signupForm button {
-        width: 100%;
-      }
-    }
 
-    @keyframes fadeIn {
-      from {opacity: 0; transform: translateX(-50px);}
-      to {opacity: 1; transform: translateY(0);}
-    }
-
-    h2 {
-      color: #2c3e50;
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      margin: 10px 0 5px;
-      text-align: left;
-      font-weight: bold;
-    }
-
-    input {
-      width: 90%;
-      padding: 8px;
-      margin: 8px 0;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      outline: none;
-      transition: 0.3s;
-    }
-
-    input:focus {
-      border-color: #27ae60;
-      box-shadow: 0 0 8px rgba(39, 174, 96, 0.5);
-    }
-
-    button {
-      width: 95%;
-      padding: 12px;
-      background: #27ae60;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    button:hover {
-      background: #219150;
-    }
-
-    p {
-      margin-top: 15px;
-      font-size: 14px;
-    }
-
-    a {
-      color: #2980b9;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    #message {
-      margin-top: 10px;
-      font-weight: bold;
-      color: #e74c3c;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h2>Create Your Tourist ID</h2>
-    <form id="signupForm">
-      <label for="name">Full Name</label>
-      <input type="text" id="name" name="name" required>
-
-      <label for="dob">Date of Birth</label>
-      <input type="date" id="dob" name="dob" required>
-
-      <label for="passport_number">Passport Number</label>
-      <input type="text" id="passport_number" name="passport_number" required>
-
-      <label for="issue_date">Passport Issue Date</label>
-      <input type="date" id="issue_date" name="issue_date" required>
-
-      <label for="user_private_key">User Private Key</label>
-      <input type="text" id="user_private_key" name="user_private_key" required>
-
-      <label for="govt_signature">Govt Signature</label>
-      <input type="text" id="govt_signature" name="govt_signature" required>
-
-      <label for="destination_place">Destination Place</label>
-      <input type="text" id="destination_place" name="destination_place" required>
-
-
-      <button type="submit">Sign Up</button>
-    </form>
-    <p id="message"></p>
-    <p>Already have an account? <a href="login.html">Login</a></p>
-  </div>
-
-  <script>
-    document.getElementById('signupForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const submitBtn = e.target.querySelector('button[type="submit"]') || document.querySelector('#signupForm button[type="submit"]');
-      const msgEl = document.getElementById('message');
-      if (msgEl) { msgEl.style.color = '#2c3e50'; msgEl.innerText = 'Loading...'; }
-      if (submitBtn) { submitBtn.disabled = true; submitBtn.style.opacity = '0.7'; }
-      const data = {
-        name: document.getElementById('name').value.trim(),
-        dob: document.getElementById('dob').value.trim(),
-        passport_number: document.getElementById('passport_number').value.trim(),
-        issue_date: document.getElementById('issue_date').value.trim(),
-        user_private_key: document.getElementById('user_private_key').value.trim(),
-        govt_signature: document.getElementById('govt_signature').value.trim(),
-        destination_place: document.getElementById('destination_place').value.trim()
-      };
-      try {
-        const res = await fetch('https://smart-tourism-backend-2.onrender.com/api/signup', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        });
-        const result = await res.json();
-        if (res.status === 200) {
-          if (msgEl) { msgEl.style.color = 'green'; msgEl.innerText = result.reactivated ? '✅ Account reactivated! Redirecting...' : '✅ Signed up successfully! Redirecting...'; }
-          setTimeout(() => window.location.href = 'login.html', 1500);
-        } else {
-          if (msgEl) { msgEl.style.color = 'red'; msgEl.innerText = `❌ Signup failed: ${result.error || 'Unknown error'}`; }
+      @media (min-width: 900px) {
+        .container {
+          width: 700px;
         }
-      } catch(err) {
-        if (msgEl) { msgEl.style.color = 'red'; msgEl.innerText = '❌ Network error. Please try again.'; }
-      } finally {
-        if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = '1'; }
+        #signupForm {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 20px 30px;
+          text-align: left;
+        }
+        #signupForm label,
+        #signupForm input {
+          width: 100%;
+          margin: 0;
+        }
+        #signupForm button {
+          grid-column: span 2;
+          width: 100%;
+        }
+        #message {
+          grid-column: span 2;
+        }
       }
-    });
-  </script>
-</body>
+
+      @media (max-width: 600px) {
+        .container {
+          width: 98vw;
+          padding: 10px;
+        }
+        #signupForm label,
+        #signupForm input,
+        #signupForm button {
+          width: 100%;
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateX(-50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h2 {
+        color: #2c3e50;
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin: 10px 0 5px;
+        text-align: left;
+        font-weight: bold;
+      }
+
+      input {
+        width: 90%;
+        padding: 8px;
+        margin: 8px 0;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        outline: none;
+        transition: 0.3s;
+      }
+
+      input:focus {
+        border-color: #27ae60;
+        box-shadow: 0 0 8px rgba(39, 174, 96, 0.5);
+      }
+
+      button {
+        width: 95%;
+        padding: 12px;
+        background: #27ae60;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      button:hover {
+        background: #219150;
+      }
+
+      p {
+        margin-top: 15px;
+        font-size: 14px;
+      }
+
+      a {
+        color: #2980b9;
+        text-decoration: none;
+        font-weight: bold;
+      }
+
+      #message {
+        margin-top: 10px;
+        font-weight: bold;
+        color: #e74c3c;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Create Your Tourist ID</h2>
+      <form id="signupForm">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" required />
+
+        <label for="dob">Date of Birth</label>
+        <input type="date" id="dob" required />
+
+        <label for="mobile_number">Mobile</label>
+        <input type="text" maxlength="13" minlength="10" id="mobile_number" required />
+
+        <label for="email">E-mail</label>
+        <input type="email" id="email" required />
+
+        <label for="password">Password</label>
+        <input type="password" id="password" required />
+
+        <label for="reenter_password">Re-enter Password</label>
+        <input type="password" id="reenter_password" required />
+
+        <button type="submit">Sign Up</button>
+      </form>
+      <p id="message"></p>
+      <p>Already have an account? <a href="login.html">Login</a></p>
+    </div>
+
+    <script>
+      document
+        .getElementById("signupForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const submitBtn =
+            e.target.querySelector('button[type="submit"]') ||
+            document.querySelector('#signupForm button[type="submit"]');
+
+          const password = document.getElementById("password").value.trim();
+          const reenteredPassword = document
+            .getElementById("reenter_password")
+            .value.trim();
+
+          if (password !== reenteredPassword) {
+            const msgEl = document.getElementById("message");
+            if (msgEl) {
+              msgEl.style.color = "red";
+              msgEl.innerText = "❌ Passwords do not match.";
+            }
+            return;
+          }
+
+          const msgEl = document.getElementById("message");
+          if (msgEl) {
+            msgEl.style.color = "#2c3e50";
+            msgEl.innerText = "Loading...";
+          }
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = "0.7";
+          }
+
+          const data = {
+            name: document.getElementById("name").value.trim(),
+            dob: document.getElementById("dob").value.trim(),
+            mobile_number: document
+              .getElementById("mobile_number")
+              .value.trim(),
+            email: document.getElementById("email").value.trim(),
+            password: document.getElementById("password").value.trim(),
+          };
+
+          try {
+            const res = await fetch(
+              "https://smart-tourism-backend-3.onrender.com/api/signup",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+              }
+            );
+            const result = await res.json();
+            if (res.status === 200) {
+              if (msgEl) {
+                msgEl.style.color = "green";
+                msgEl.innerText = result.reactivated
+                  ? "✅ Account reactivated! Redirecting..."
+                  : "✅ Signed up successfully! Redirecting...";
+              }
+              setTimeout(() => (window.location.href = "login.html"), 1500);
+            } else {
+              if (msgEl) {
+                msgEl.style.color = "red";
+                msgEl.innerText = `❌ Signup failed: ${
+                  result.error || "Unknown error"
+                }`;
+              }
+            }
+          } catch (err) {
+            if (msgEl) {
+              msgEl.style.color = "red";
+              msgEl.innerText = "❌ Network error. Please try again.";
+            }
+          } finally {
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.style.opacity = "1";
+            }
+          }
+        });
+    </script>
+  </body>
 </html>

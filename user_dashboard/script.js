@@ -132,7 +132,7 @@ async function checkAuthentication() {
     return false;
   }
   try {
-    const res = await fetch("https://smart-tourism-backend-2.onrender.com/api/verify-token", {
+    const res = await fetch("https://smart-tourism-backend-3.onrender.com/api/verify-token", {
       method: "GET",
       headers: { authorization: jwt },
     });
@@ -274,7 +274,7 @@ function setupEventListeners() {
     const signoutClose = document.getElementById("signoutClose");
     const signoutCancel = document.getElementById("signoutCancel");
     const soUserHash = document.getElementById("so_user_hash");
-    const soGovSig = document.getElementById("so_gov_sig");
+    const soPassword = document.getElementById("so_password");
     const signoutMsg = document.getElementById("signoutMsg");
     
 
@@ -319,7 +319,7 @@ function setupEventListeners() {
         e.preventDefault();
         const jwt = getCookie("jwt");
         if (jwt) {
-          fetch("https://smart-tourism-backend-2.onrender.com/api/logout", {
+          fetch("https://smart-tourism-backend-3.onrender.com/api/logout", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -347,7 +347,10 @@ function setupEventListeners() {
           signoutMsg.textContent = "";
           signoutMsg.style.color = "#e9f1ff";
         }
-        if (soGovSig) soGovSig.value = "";
+        if (soPassword) {
+          soPassword.value = "";
+          try { soPassword.focus(); } catch (e) {}
+        }
         if (signoutModal) signoutModal.style.display = "flex";
       });
     }
@@ -374,8 +377,8 @@ function setupEventListeners() {
         }
         const userHash =
           soUserHash && soUserHash.value ? soUserHash.value.trim() : "";
-        const govtSig = soGovSig && soGovSig.value ? soGovSig.value.trim() : "";
-        if (!userHash || !govtSig) {
+        const password = soPassword && soPassword.value ? soPassword.value.trim() : "";
+        if (!userHash || !password) {
           if (signoutMsg) {
             signoutMsg.textContent = "Please fill all required fields";
             signoutMsg.style.color = "#ff8a8a";
@@ -383,7 +386,7 @@ function setupEventListeners() {
           return;
         }
         try {
-          const r = await fetch("https://smart-tourism-backend-2.onrender.com/api/signout", {
+          const r = await fetch("https://smart-tourism-backend-3.onrender.com/api/signout", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -391,7 +394,7 @@ function setupEventListeners() {
             },
             body: JSON.stringify({
               user_data_hash: userHash,
-              govt_signout_signature: govtSig,
+              password: password,
             }),
           });
           if (r.ok) {
@@ -401,6 +404,7 @@ function setupEventListeners() {
             }
             setTimeout(() => {
               clearJWTToken();
+              // Do not process or display any user data returned by the API on signout.
               window.location.href = "../authenticate/login.html";
             }, 800);
           } else {
@@ -484,7 +488,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 document.getElementById('tourBuddy').addEventListener('click', async () => {
-  const fetched = await fetch('https://smart-tourism-backend-2.onrender.com/api/tourbuddy-url')
+  const fetched = await fetch('https://smart-tourism-backend-3.onrender.com/api/tourbuddy-url')
   const data = await fetched.json();
   console.log(data);
   if(data) {

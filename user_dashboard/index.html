@@ -492,10 +492,11 @@
     <script
       src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
       crossorigin=""
+      async
     ></script>
-    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
-    <script src="../public/js/i18n.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js" async></script>
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js" async></script>
+    <script src="../public/js/i18n.js" defer></script>
 
     <!-- Sign Out Modal -->
     <div
@@ -581,11 +582,17 @@
             data-i18n="dashboard.modal.govSig"
             >Govt Key</label
           >
+          <label
+            for="so_password"
+            style="display: block; margin: 12px 0 6px; font-size: 14px"
+            data-i18n="dashboard.modal.password"
+            >Password</label
+          >
           <input
-            id="so_gov_sig"
-            name="govt_signout_signature"
-            type="text"
-            placeholder="Enter government signout signature"
+            id="so_password"
+            name="password"
+            type="password"
+            placeholder="Enter your account password"
             required
             style="
               width: 100%;
@@ -644,6 +651,7 @@
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
       crossorigin="anonymous"
+      async
     ></script>
 
     <script src="script.js"></script>

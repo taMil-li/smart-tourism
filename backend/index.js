@@ -53,26 +53,20 @@ function validateSignup(data) {
   const {
     name,
     dob,
-    passport_number,
-    issue_date,
-    user_private_key,
-    govt_signature,
-    destination_place,
+    mobile_number,
+    email,
+    password,
   } = data;
 
   if (!name || typeof name !== "string" || name.length < 2)
     return "Invalid name";
   if (!dob || !/^\d{4}-\d{2}-\d{2}$/.test(dob)) return "Invalid date of birth";
-  if (!passport_number || typeof passport_number !== "string")
-    return "Invalid passport number";
-  if (!issue_date || !/^\d{4}-\d{2}-\d{2}$/.test(issue_date))
-    return "Invalid issue date";
-  if (!user_private_key || typeof user_private_key !== "string")
-    return "Invalid user private key";
-  if (!govt_signature || typeof govt_signature !== "string")
-    return "Invalid government signature";
-  if (!destination_place || typeof destination_place !== "string")
-    return "Invalid destination place";
+  if (!mobile_number || typeof mobile_number !== "string" || mobile_number.length < 10)
+    return "Invalid mobile number";
+  if(!email || typeof email !== "string"|| !email.includes("@"))
+    return "Invalid email";
+  if (!password || typeof password !== "string" || password.length < 8)
+    return "Password must be at least 8 characters";
   return null;
 }
 
@@ -114,21 +108,17 @@ app.post("/api/signup", async (req, res) => {
     const {
       name,
       dob,
-      passport_number,
-      issue_date,
-      user_private_key,
-      govt_signature,
-      destination_place,
+      mobile_number,
+      email,
+      password,
     } = req.body;
 
     if (
       !name ||
       !dob ||
-      !passport_number ||
-      !issue_date ||
-      !user_private_key ||
-      !govt_signature ||
-      !destination_place
+      !mobile_number ||
+      !email ||
+      !password
     ) {
       return res.status(400).json({ error: "Missing required signup fields." });
     }
@@ -138,14 +128,13 @@ app.post("/api/signup", async (req, res) => {
       return res.status(400).json({ error: validationError });
     }
 
-    const dataString = `${name}|${dob}|${passport_number}|${issue_date}|${destination_place}`;
+    const dataString = `${dob}|${email}`;
     const user_data_hash = crypto
       .createHash("sha256")
       .update(dataString)
       .digest("hex");
 
-    const hashedUserKey = await bcrypt.hash(user_private_key, 15);
-    const hashedGovtSignature = await bcrypt.hash(govt_signature, 15);
+    const hashedPassword = await bcrypt.hash(password, 15);
 
     // Check if user already exists
     const existing = await users.findOne({ user_data_hash });
@@ -162,8 +151,7 @@ app.post("/api/signup", async (req, res) => {
         {
           $set: {
             active: true,
-            user_signature: hashedUserKey,
-            govt_signature: hashedGovtSignature,
+            password: hashedPassword,
           },
         }
       );
@@ -174,12 +162,9 @@ app.post("/api/signup", async (req, res) => {
     await users.insertOne({
       user_data_hash,
       name,
-      dob,
-      passport_number,
-      issue_date,
-      destination_place,
-      user_signature: hashedUserKey,
-      govt_signature: hashedGovtSignature,
+      email,
+      mobile_number,
+      password: hashedPassword,
       active: true,
       created_at: new Date(),
     });
@@ -197,26 +182,20 @@ app.post("/api/login", async (req, res) => {
     const users = await initMongo();
 
     const {
-      name,
       dob,
-      passport_number,
-      issue_date,
-      destination_place,
-      user_private_key,
+      email,
+      password,    
     } = req.body;
 
     if (
-      !name ||
       !dob ||
-      !passport_number ||
-      !issue_date ||
-      !destination_place ||
-      !user_private_key
+      !email ||
+      !password
     ) {
       return res.status(400).json({ error: "Missing required login fields" });
     }
 
-    const dataString = `${name}|${dob}|${passport_number}|${issue_date}|${destination_place}`;
+    const dataString = `${dob}|${email}`;
     const user_data_hash = crypto
       .createHash("sha256")
       .update(dataString)
@@ -232,8 +211,8 @@ app.post("/api/login", async (req, res) => {
     }
 
     const keyMatch = await bcrypt.compare(
-      user_private_key,
-      user.user_signature
+      password,
+      user.password
     );
     if (!keyMatch) {
       return res
@@ -299,35 +278,6 @@ app.get("/api/verify-token", (req, res) => {
     if (err) return res.status(401).json({ valid: false });
     return res.json({ valid: true, data: decoded });
   });
-});
-
-// GET DESTINATION BY PASSPORT + PRIVATE KEY
-app.post("/api/get-destination", async (req, res) => {
-  const { passport_number, user_private_key } = req.body;
-
-  try {
-    const users = await initMongo();
-
-    const user = await users.findOne({ passport_number, active: true });
-    if (!user) return res.status(404).json({ error: "User not found" });
-
-    const keyMatch = await bcrypt.compare(
-      user_private_key,
-      user.user_signature
-    );
-    if (!keyMatch)
-      return res.status(403).json({ error: "Invalid credentials" });
-
-    return res.json({
-      destination_place: user.destination_place,
-      name: user.name,
-      dob: user.dob,
-      issue_date: user.issue_date,
-    });
-  } catch (err) {
-    console.error("get-destination error:", err);
-    return res.status(500).json({ error: "Server error" });
-  }
 });
 
 // TOURBUDDY URL
